@@ -174,7 +174,7 @@ export default function App() {
         }
       }
     };
-
+    console.log(board[index] !== currentPlayer.mark);
     return (
       <button
         className={`${
@@ -184,7 +184,7 @@ export default function App() {
         } ${
           winnerIndices?.includes(index) &&
           (isPlayingAgainstAi || isPlayingAgainstBot) &&
-          currentPlayer.human &&
+          board[index] !== currentPlayer.mark &&
           "bg-red-600"
         } ${
           canClick ? "cursor-pointer hover:bg-zinc-800/50" : "cursor-default"
@@ -361,14 +361,7 @@ export default function App() {
 
   const PlayAgainButton = () => {
     if (gameOver) {
-      return (
-        <Button
-          onClick={() => handlePlayAgain()}
-          className="hover:bg-green-600"
-        >
-          Play Again
-        </Button>
-      );
+      return <Button onClick={() => handlePlayAgain()}>Play Again</Button>;
     }
   };
 
