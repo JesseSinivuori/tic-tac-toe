@@ -162,15 +162,14 @@ export const Square = ({
 
   const handleArrowKeyPress = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     let newIndex;
-    const gridSize = 3; // For a 3x3 grid
     const currentSquareIndex = parseInt(e.currentTarget.id.split("-")[1]);
 
     switch (e.key) {
       case "ArrowUp":
-        newIndex = currentSquareIndex - gridSize;
+        newIndex = currentSquareIndex - board.size;
         break;
       case "ArrowDown":
-        newIndex = currentSquareIndex + gridSize;
+        newIndex = currentSquareIndex + board.size;
         break;
       case "ArrowLeft":
         newIndex = currentSquareIndex - 1;
@@ -183,7 +182,7 @@ export const Square = ({
     }
 
     // Check if the new index is out of bounds
-    if (newIndex >= 0 && newIndex < gridSize * gridSize) {
+    if (newIndex >= 0 && newIndex < board.size * board.size) {
       // Move focus to the next square
       document.getElementById(`square-${newIndex}`)?.focus();
     }
