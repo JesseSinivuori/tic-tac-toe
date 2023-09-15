@@ -29,13 +29,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${
-        darkModeCookie ? "dark " : ""
-      }  overflow-y-auto overflow-x-clip`}
+      className={`${darkModeCookie ? "dark " : ""}  `}
       style={{ colorScheme: "dark" }}
     >
       <body
-        className={`${inter.className} relative dark:text-white text-black dark:bg-zinc-950 bg-zinc-50 flex flex-col items-center w-full px-2 min-h-screen h-full pb-24`}
+        className={`${inter.className}  relative dark:text-white text-black dark:bg-zinc-950 bg-zinc-50 flex flex-col items-center w-full px-2 min-h-screen h-full pb-24`}
       >
         <NextAuthProvider session={session}>
           <ClientProviders>

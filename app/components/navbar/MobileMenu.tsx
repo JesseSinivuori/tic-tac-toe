@@ -8,9 +8,18 @@ export default function MobileMenu({
 }) {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
 
+  const handleToggleMobileMenu = () => {
+    setMobileMenuIsOpen(!mobileMenuIsOpen);
+    const body = document.querySelector("body");
+    if (!mobileMenuIsOpen) {
+      body?.classList.add("overflow-hidden");
+    } else {
+      body?.classList.remove("overflow-hidden");
+    }
+  };
   return (
     <div className="flex sm:hidden">
-      <MobileMenuButton onClick={() => setMobileMenuIsOpen(!mobileMenuIsOpen)}>
+      <MobileMenuButton onClick={handleToggleMobileMenu}>
         <MobileMenuOpenIcon />
       </MobileMenuButton>
       {mobileMenuIsOpen && (
@@ -27,9 +36,7 @@ export default function MobileMenu({
         } flex-col fixed right-0 top-0 bottom-0 max-w-[240px] w-full h-full dark:bg-zinc-950 bg-zinc-50 border-l dark:border-white/10 border-black/10`}
       >
         <div className="flex justify-start items-stretch gap-4 flex-col h-full w-full p-4">
-          <MobileMenuButton
-            onClick={() => setMobileMenuIsOpen(!mobileMenuIsOpen)}
-          >
+          <MobileMenuButton onClick={handleToggleMobileMenu}>
             <MobileMenuCloseIcon />
           </MobileMenuButton>
           <div className="py-2 border-t dark:border-white/10 border-black/10"></div>
