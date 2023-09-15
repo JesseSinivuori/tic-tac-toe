@@ -24,7 +24,7 @@ export default function MobileMenu({
       </MobileMenuButton>
       {mobileMenuIsOpen && (
         <div
-          onClick={() => setMobileMenuIsOpen(false)}
+          onClick={handleToggleMobileMenu}
           className="fixed top-0 left-0 w-full h-full z-[9998]"
         ></div>
       )}
