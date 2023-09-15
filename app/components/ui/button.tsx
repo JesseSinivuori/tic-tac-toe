@@ -15,7 +15,7 @@ export default function Button({
       onClick={onClick}
       className={`${
         className && className
-      } border p-2 rounded-md border-white/10`}
+      } border px-4 py-2 rounded-md dark:border-white/10 border-black/10`}
       {...props}
     >
       {children}
