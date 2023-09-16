@@ -83,7 +83,14 @@ export default function HomeClient({
 
   const [aiRetries, setAiRetries] = useState(0);
 
-  const marksToWin = generateMarksToWin(board);
+  const getMarksToWin = () => {
+    if (gameMode === "MULTIPLAYER" && roomData) {
+      return generateMarksToWin(roomData?.board);
+    }
+    return generateMarksToWin(board);
+  };
+
+  const marksToWin = getMarksToWin();
   const winConditions = generateWinConditions(marksToWin);
   const getWinner = () => {
     let winner;
@@ -98,14 +105,12 @@ export default function HomeClient({
   const winner = getWinner();
 
   const getDraw = () => {
-    let draw;
     if (gameMode === "MULTIPLAYER" && roomData) {
-      draw = checkDraw(roomData.board, winConditions, marksToWin);
+      return checkDraw(roomData.board, winConditions, marksToWin);
     }
     if (gameMode !== "MULTIPLAYER") {
-      draw = checkDraw(board, winConditions, marksToWin);
+      return checkDraw(board, winConditions, marksToWin);
     }
-    return draw;
   };
 
   const draw = getDraw();
@@ -236,11 +241,11 @@ export default function HomeClient({
       return <p className="pb-8">{`It's your turn ${player.player}.`}</p>;
     }
 
-    /*  return (
+    return (
       <p className="pb-8">{`It's your turn ${
         player.turn === "player" ? player.player : player.opponent
       }.`}</p>
-    ); */
+    );
   };
 
   const handleClickPlayAgainstAI = () => {

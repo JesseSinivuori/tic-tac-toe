@@ -1,4 +1,5 @@
 "use client";
+import { useMutation } from "convex/react";
 import {
   Select,
   SelectContent,
@@ -6,9 +7,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { GameMode } from "../providers/GameLogicProvider";
+import { GameMode, useGameLogicContext } from "../providers/GameLogicProvider";
 import { RoomData } from "../room/[id]/page";
 import { Board } from "./HomeClient";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
 export default function SelectGridSize({
   setBoard,
@@ -23,10 +26,19 @@ export default function SelectGridSize({
   roomData: RoomData;
   playerId: string | null | undefined;
 }) {
+  const { gameMode } = useGameLogicContext();
   const handleValueChange = (value: string) => {
     const newSize = Number(value);
+    if (gameMode === "MULTIPLAYER") return handleMultiplayer(newSize);
+
     setBoard({ board: generateBoard(newSize), size: newSize });
     if (newSize === 7) setGameMode("LOCAL");
+  };
+
+  const changeBoardSize = useMutation(api.rooms.changeBoardSize);
+  const handleMultiplayer = (newSize: number) => {
+    const newBoard = { board: generateBoard(newSize), size: newSize };
+    changeBoardSize({ roomId: roomData?._id as Id<"rooms">, board: newBoard });
   };
 
   return (

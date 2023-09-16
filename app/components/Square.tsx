@@ -47,18 +47,28 @@ export const Square = ({
   playerId?: string | null;
 }) => {
   const { setGameStatus, gameStatus } = useGameLogicContext();
-  const gameIsNotOver = board.board[index] === "E" && !gameOver;
-  const canClickNotMultiplayer =
-    gameIsNotOver && player.turn === "player" && gameMode !== "MULTIPLAYER";
-  const canClickLocal = gameIsNotOver && gameMode === "LOCAL";
-  const canClickMultiplayer =
-    gameIsNotOver && roomData?.currentTurn === playerId;
-  const canClick =
-    canClickNotMultiplayer || canClickLocal || canClickMultiplayer;
+
+  const canClick = () => {
+    const gameIsNotOver = board.board[index] === "E" && !gameOver;
+    const canClickNotMultiplayer =
+      gameIsNotOver &&
+      player.turn === "player" &&
+      gameMode !== "MULTIPLAYER" &&
+      gameMode !== "LOCAL";
+    const canClickLocal = gameIsNotOver && gameMode === "LOCAL";
+    const canClickMultiplayer =
+      gameIsNotOver &&
+      roomData?.currentTurn === playerId &&
+      gameMode === "MULTIPLAYER";
+    const canClick =
+      canClickNotMultiplayer || canClickLocal || canClickMultiplayer;
+    return canClick;
+  };
+
   const makeTurn = useMutation(api.rooms.makeTurn);
   const handleMultiplayerWinner = useMutation(api.rooms.winner);
   const handleMultiplayerDraw = useMutation(api.rooms.draw);
-
+  console.log(player);
   const handleMultiplayer = async () => {
     if (!roomData) throw new Error("roomData was not found.");
     if (roomData?.currentTurn === playerId) {
@@ -76,7 +86,7 @@ export const Square = ({
   };
 
   const handleClick = async () => {
-    if (canClick) {
+    if (canClick()) {
       if (gameStatus !== "ongoing") setGameStatus("ongoing");
 
       let newBoard = { ...board, board: [...board.board] };
@@ -187,22 +197,27 @@ export const Square = ({
       document.getElementById(`square-${newIndex}`)?.focus();
     }
   };
-  const waitingForOpponent =
-    player.turn === "opponent" &&
-    gameMode !== "LOCAL" &&
-    board.board[index] === "E";
-  const waitingForOpponentMultiplayer =
-    board.board[index] === "E" && playerId !== roomData?.currentTurn;
+
+  const isWaitingForOpponent = () => {
+    const waitingForOpponent =
+      player.turn === "opponent" &&
+      gameMode !== "LOCAL" &&
+      gameMode !== "MULTIPLAYER" &&
+      board.board[index] === "E";
+    const waitingForOpponentMultiplayer =
+      board.board[index] === "E" && playerId !== roomData?.currentTurn;
+    const isWaiting = waitingForOpponent || waitingForOpponentMultiplayer;
+    return isWaiting;
+  };
+
   return (
     <button
       id={`square-${index}`}
+      type="button"
       className={`${getWinnerHighlight()} ${
-        canClick ? "cursor-pointer hover:bg-zinc-500/10" : "cursor-default"
+        canClick() ? "cursor-pointer hover:bg-zinc-500/10" : "cursor-default"
       }
-       ${
-         waitingForOpponent ||
-         (waitingForOpponentMultiplayer && "animate-pulse")
-       } border ${
+       ${isWaitingForOpponent() && "animate-pulse"} border ${
         !winnerIndices?.includes(index) &&
         "dark:border-white/20 border-zinc-950/20"
       } sm:m-2 m-1 flex items-center rounded-md justify-center font-medium text-[40px] w-[80px] h-[80px]`}

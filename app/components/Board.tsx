@@ -58,8 +58,8 @@ export const Board = ({
       <div
         className={`grid flex-none`}
         style={{
-          gridTemplateColumns: `repeat(${board.size}, minmax(0, 1fr))`,
-          gridTemplateRows: `repeat(${board.size}, minmax(0, 1fr))`,
+          gridTemplateColumns: `repeat(${getBoard().size}, minmax(0, 1fr))`,
+          gridTemplateRows: `repeat(${getBoard().size}, minmax(0, 1fr))`,
           aspectRatio: 1 / 1,
         }}
       >

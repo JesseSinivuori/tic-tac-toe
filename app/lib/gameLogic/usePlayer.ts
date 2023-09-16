@@ -6,13 +6,13 @@ export type Player = {
   player: Mark;
   opponent: Mark;
   turn: Turn;
-  multiplayerTurn: string;
+  multiplayerTurn?: string;
   playerOnWinStreak: Mark;
   winStreak: number;
   opponentWinStreak: number;
-  player1Name: string;
-  player2Name: string;
-  playerOnWinStreakMultiplayerId: string;
+  player1Name?: string;
+  player2Name?: string;
+  playerOnWinStreakMultiplayerId?: string;
 };
 
 export const usePlayer = () => {
@@ -20,13 +20,9 @@ export const usePlayer = () => {
     player: "X",
     opponent: "O",
     turn: "player",
-    multiplayerTurn: "",
     playerOnWinStreak: "O",
     winStreak: 0,
     opponentWinStreak: 0,
-    player1Name: "X",
-    player2Name: "O",
-    playerOnWinStreakMultiplayerId: "",
   });
 
   const togglePlayer = () => {

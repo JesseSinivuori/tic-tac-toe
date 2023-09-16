@@ -154,3 +154,25 @@ export const draw = mutation({
     }
   },
 });
+
+export const changeBoardSize = mutation({
+  args: {
+    roomId: v.id("rooms"),
+    board: v.object({
+      board: v.array(v.string()),
+      size: v.number(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const room = await ctx.db.get(args.roomId);
+    if (room) {
+      const newRoom = {
+        ...room,
+        board: args.board,
+      };
+      await ctx.db.patch(room._id, newRoom);
+    } else {
+      throw new Error("Failed to change room size.");
+    }
+  },
+});
