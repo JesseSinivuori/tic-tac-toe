@@ -76,7 +76,6 @@ export default function HomeClient({
       const storedGameMode = getGameModeFromLocalStorage();
       setGameMode((storedGameMode as GameMode) ?? "LOCAL");
     }
-    console.log(gameMode);
   }, [gameMode, playerId, roomData, setGameMode, setPlayer]);
 
   const loginRequired = !session && gameMode === "AI";
@@ -118,7 +117,6 @@ export default function HomeClient({
 
   const GameOver = () => {
     if (winner) {
-      console.log(player.winStreak, player.opponentWinStreak);
       const winStreak = player.winStreak || player.opponentWinStreak;
       if (
         gameMode === "LOCAL" ||
@@ -149,7 +147,6 @@ export default function HomeClient({
       }
 
       if (gameMode === "MULTIPLAYER" && roomData) {
-        console.log(roomData?.player1WinStreak, roomData?.player2WinStreak);
         const winStreak =
           roomData?.player1WinStreak || roomData?.player2WinStreak;
         return (

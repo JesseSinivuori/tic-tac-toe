@@ -70,7 +70,7 @@ export default function Room({ params: { id } }: { params: { id: string } }) {
         playerName: playerName,
       });
     } catch (error) {
-      console.error("Failed to join room:", error);
+      throw new Error("Failed to join room.");
     }
   };
 

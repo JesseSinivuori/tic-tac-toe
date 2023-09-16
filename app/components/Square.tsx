@@ -68,7 +68,7 @@ export const Square = ({
   const makeTurn = useMutation(api.rooms.makeTurn);
   const handleMultiplayerWinner = useMutation(api.rooms.winner);
   const handleMultiplayerDraw = useMutation(api.rooms.draw);
-  console.log(player);
+
   const handleMultiplayer = async () => {
     if (!roomData) throw new Error("roomData was not found.");
     if (roomData?.currentTurn === playerId) {
