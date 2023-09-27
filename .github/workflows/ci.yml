@@ -24,7 +24,7 @@ jobs:
         with:
           version: ${{ matrix.pnpm-version }}
 
-      - name: Cache PNPM dependencies # (2)
+      - name: Cache PNPM dependencies
         uses: actions/cache@v3
         id: pnpm
         with:
