@@ -6,6 +6,8 @@ export function HistoryLink() {
   const { user } = useUser();
   if (!user) return;
   return (
-    <LinkComponent href={`/game-history/${user?.id}`}>History</LinkComponent>
+    <LinkComponent href={`/game-history/${user?.id}`}>
+      Match History
+    </LinkComponent>
   );
 }
