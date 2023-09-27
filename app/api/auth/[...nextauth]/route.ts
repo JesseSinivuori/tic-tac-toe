@@ -1,3 +1,7 @@
+import dbConnect from "@/app/lib/dbConnect";
+import { createAndSaveUser } from "@/app/models/user/user.functions";
+import { User } from "@/app/models/user/user.schema";
+import { UserSchema } from "@/app/models/user/user.schema.zod";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
@@ -23,25 +27,29 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      const email = user.email;
+      try {
+        const email = user.email;
+        if (!email) return false;
 
-      const res = await fetch(`${baseUrl}/api/users/sign-in`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-        }),
-      });
+        await dbConnect();
 
-      const data = await res.json();
+        const existingUser = await User.findOne({
+          email,
+        });
 
-      if (!res.ok) {
-        throw new Error(data.error || "Something went wrong.");
+        if (!existingUser) {
+          const newUser: UserSchema = {
+            email: email,
+          };
+
+          await createAndSaveUser(newUser);
+        }
+
+        return true;
+      } catch (error) {
+        console.error("Error during signIn:", error);
+        return false;
       }
-
-      return true;
     },
   },
 };

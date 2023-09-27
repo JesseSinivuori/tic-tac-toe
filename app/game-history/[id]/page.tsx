@@ -14,6 +14,7 @@ import {
   LinkComponentOutline,
 } from "@/app/components/ui/link";
 import { Card } from "@/app/components/ui/card";
+import ChooseUserName from "@/app/components/ChooseUserName";
 
 const getPopulatedPlayer = (player: PlayerSchema): PopulatedPlayerSchema => {
   return {
@@ -36,6 +37,10 @@ export default async function History({
 
   if (!data) return <div className="animate-pulse pt-8">Loading...</div>;
   const { gameHistory, username } = data.user;
+
+  if (!username) {
+    return <ChooseUserName />;
+  }
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center pt-8">

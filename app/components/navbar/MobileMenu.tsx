@@ -26,7 +26,7 @@ export default function MobileMenu({
   return (
     <div className={`${mobileMenuIsOpen ? "flex" : "sm:hidden"}`}>
       <MobileMenuButton onClick={handleToggleMobileMenu}>
-        <MobileMenuOpenIcon />
+        <MobileMenuOpenIcon className="sm:hidden" />
       </MobileMenuButton>
       {mobileMenuIsOpen && (
         <div
@@ -53,12 +53,12 @@ export default function MobileMenu({
   );
 }
 
-const MobileMenuOpenIcon = () => (
+const MobileMenuOpenIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="currentColor"
-    className="h-6 w-6"
+    className={`h-6 w-6 ${className || ""}`}
   >
     <path
       fillRule="evenodd"
