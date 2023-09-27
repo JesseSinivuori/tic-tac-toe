@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export function PATCH(_req: NextRequest, _res: NextResponse) {
-  const darkModeCookie = cookies().get("darkMode");
+export async function PATCH(req: NextRequest, _res: NextResponse) {
+  const darkMode = await req.json();
 
-  if (darkModeCookie?.value) {
+  if (darkMode) {
     cookies().delete("darkMode");
   } else {
     cookies().set("darkMode", "false");

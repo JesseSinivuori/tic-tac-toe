@@ -24,19 +24,19 @@ export default function RootLayout({
   session: Session;
 }) {
   const darkModeCookie: boolean = JSON.parse(
-    cookies().get("darkMode")?.value ?? "true"
+    cookies().get("darkMode")?.value ?? "true",
   );
   return (
     <html
       lang="en"
-      className={`${darkModeCookie ? "dark " : ""}  `}
+      className={`${darkModeCookie ? "dark" : ""}  `}
       style={{ colorScheme: "dark" }}
     >
       <body
-        className={`${inter.className}  relative dark:text-white text-black dark:bg-zinc-950 bg-zinc-50 flex flex-col items-center w-full px-2 min-h-screen h-full pb-24`}
+        className={`${inter.className} relative flex h-full min-h-screen w-full flex-col items-center bg-zinc-50 pb-24 text-black dark:bg-zinc-950 dark:text-white`}
       >
         <NextAuthProvider session={session}>
-          <ClientProviders>
+          <ClientProviders darkModeCookie={darkModeCookie}>
             <Toaster
               containerClassName="!z-[999999]"
               toastOptions={{
@@ -46,7 +46,9 @@ export default function RootLayout({
               }}
             />
             <Navbar />
-            {children}
+            <main className="flex h-full w-full max-w-[1000px] flex-col items-center px-4">
+              {children}
+            </main>
             <Footer />
           </ClientProviders>
         </NextAuthProvider>

@@ -1,15 +1,19 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import HomeClient, { Board } from "@/app/components/HomeClient";
 import { api } from "@/convex/_generated/api";
 import {
-  getPlayerIdFromLocalStorage,
-  setPlayerIdToLocalStorage,
+  getPlayerFromLocalStorage,
+  setPlayerToLocalStorage,
 } from "@/app/lib/localStorage";
 import { Id } from "@/convex/_generated/dataModel";
 import { GameStatus } from "@/app/providers/GameLogicProvider";
 import toast from "react-hot-toast";
+import { useUser } from "@/app/providers/UserProvider";
+import { InputWithLabel } from "@/app/components/ui/inputWithLabel";
+import { ButtonGreen } from "@/app/components/ui/button";
+import ChooseUserName from "@/app/components/ChooseUserName";
 
 export type RoomData =
   | {
@@ -30,44 +34,94 @@ export type RoomData =
   | null
   | undefined;
 
-export default function Room({ params: { id } }: { params: { id: string } }) {
-  const [playerId, setPlayerId] = useState<string | null>(null);
-  const [playerName, setPlayerName] = useState("");
-  const inviteLink = `https://tic-tac-toe-x.vercel.app/room/${id}`;
-  const [linkCopied, setLinkCopied] = useState(false);
+type RoomProps = {
+  params: {
+    id: string;
+  };
+};
+
+export type PlayerProps =
+  | {
+      id: string;
+      name: string;
+    }
+  | null
+  | undefined;
+
+export default function Room({ params: { id } }: RoomProps) {
+  const { user } = useUser();
+  const [player, setPlayer] = useState<PlayerProps>(null);
+  const playerNameRef = useRef<HTMLInputElement>(null);
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const inviteLink = `${baseUrl}/room/${id}`;
   const roomData: RoomData = useQuery(api.rooms.getRoomById, {
     roomId: id as Id<"rooms">,
   });
+
   const joinRoom = useMutation(api.rooms.joinRoom);
 
   useEffect(() => {
-    const initialPlayerName = roomData?.player1Id === playerId ? "X" : "O";
-    setPlayerName(initialPlayerName);
-  }, [playerId, roomData?.player1Id]);
+    if (user && user?.username && user.id) {
+      const newPlayer = {
+        id: user.id,
+        name: user.username,
+      };
+      setPlayer(newPlayer);
+    }
+  }, [user]);
 
-  const getPlayerId = () => {
-    const storedPlayerId = getPlayerIdFromLocalStorage();
-    if (!storedPlayerId) {
-      const newPlayerId = crypto.randomUUID();
-      setPlayerIdToLocalStorage(newPlayerId);
-      setPlayerId(newPlayerId);
-      return newPlayerId;
-    } else {
-      setPlayerId(storedPlayerId);
-      return storedPlayerId;
+  useEffect(() => {
+    if (roomData && !user) {
+      const storedPlayer = getPlayerFromLocalStorage();
+
+      setPlayer(storedPlayer);
+    }
+  }, [roomData, user]);
+
+  const getPlayer = (): PlayerProps => {
+    if (user && user.id && user.username) {
+      const player = {
+        id: user.id,
+        name: user.username,
+      };
+      setPlayer(player);
+      return player;
+    }
+    if (!user) {
+      const storedPlayer = getPlayerFromLocalStorage();
+
+      if (!storedPlayer) {
+        const newPlayerId = crypto.randomUUID();
+        const playerName =
+          playerNameRef.current?.value ||
+          (newPlayerId === roomData?.player1Id ? "X" : "O");
+        const newPlayer = {
+          id: newPlayerId,
+          name: playerName,
+        };
+        setPlayerToLocalStorage(newPlayer);
+        setPlayer(newPlayer);
+        return newPlayer;
+      } else {
+        setPlayer(storedPlayer);
+        return storedPlayer;
+      }
     }
   };
 
-  useEffect(() => {
-    getPlayerId();
-  }, []);
-
-  const handleJoinRoom = () => {
+  const handleJoinRoom = async () => {
     try {
+      const player = getPlayer();
+
+      if (!player) {
+        throw new Error("Player was not found.");
+      }
+
       joinRoom({
         roomId: id as Id<"rooms">,
-        playerId: getPlayerId(),
-        playerName: playerName,
+        playerId: player.id,
+        playerName: player.name,
       });
     } catch (error) {
       throw new Error("Failed to join room.");
@@ -76,14 +130,14 @@ export default function Room({ params: { id } }: { params: { id: string } }) {
 
   if (roomData === undefined) {
     return (
-      <div className="animate-pulse text-black dark:text-white flex flex-1 w-full h-full justify-center items-center">
+      <div className="flex h-full w-full flex-1 animate-pulse items-center justify-center pt-8 text-black dark:text-white">
         Loading room...
       </div>
     );
   }
   if (roomData === null) {
     return (
-      <div className="text-black dark:text-white flex flex-1 w-full h-full justify-center items-center">
+      <div className="flex h-full w-full flex-1 items-center justify-center pt-8 text-black dark:text-white">
         Room not found.
       </div>
     );
@@ -91,10 +145,10 @@ export default function Room({ params: { id } }: { params: { id: string } }) {
   if (
     roomData?.waitingForPlayer2ToJoin &&
     roomData.player1Name &&
-    playerId === roomData.player1Id
+    player?.id === roomData.player1Id
   ) {
     return (
-      <div className="animate-pulse text-black dark:text-white flex flex-1 w-full h-full justify-center items-center">
+      <div className="flex h-full w-full flex-1 animate-pulse items-center justify-center pt-8 text-black dark:text-white">
         Waiting for player 2...
       </div>
     );
@@ -102,11 +156,11 @@ export default function Room({ params: { id } }: { params: { id: string } }) {
 
   if (
     !roomData?.waitingForPlayer2ToJoin &&
-    playerId !== roomData?.player1Id &&
-    playerId !== roomData?.player2Id
+    player?.id !== roomData?.player1Id &&
+    player?.id !== roomData?.player2Id
   ) {
     return (
-      <div className="text-black dark:text-white flex flex-1 w-full h-full justify-center items-center">
+      <div className="flex h-full w-full flex-1 items-center justify-center pt-8 text-black dark:text-white">
         Room is full.
       </div>
     );
@@ -117,78 +171,100 @@ export default function Room({ params: { id } }: { params: { id: string } }) {
     roomData.player1Name &&
     roomData.player2Name
   ) {
-    return <HomeClient roomData={roomData} playerId={playerId} />;
+    return <HomeClient roomData={roomData} playerId={player?.id} />;
+  }
+
+  const NameInput = () => (
+    <InputWithLabel
+      inputProps={{
+        id: "name",
+        placeholder: "Name",
+        type: "text",
+        ref: playerNameRef,
+      }}
+      labelProps={{ children: "Name", htmlFor: "name" }}
+    />
+  );
+
+  const handleCopyInviteLink = () => {
+    try {
+      navigator.clipboard
+        .writeText(inviteLink)
+        .then(() => toast.success("Invite link copied to clipboard!"));
+    } catch {
+      toast.error("Failed to copy...");
+    }
+  };
+
+  const InviteLink = () => (
+    <div className="flex flex-col items-center justify-center py-8">
+      Invite link:{" "}
+      <button
+        type="button"
+        className="w-[240px] truncate text-blue-700 dark:text-blue-500"
+        onClick={handleCopyInviteLink}
+      >
+        {inviteLink}
+      </button>
+    </div>
+  );
+
+  const CreateRoomButton = () => (
+    <ButtonGreen type="button" className="mt-4" onClick={handleJoinRoom}>
+      Create Room
+    </ButtonGreen>
+  );
+
+  const JoinRoomButton = () => (
+    <ButtonGreen type="button" className="mt-4" onClick={handleJoinRoom}>
+      Join Room
+    </ButtonGreen>
+  );
+
+  if (!user?.username) {
+    return <ChooseUserName />;
+  }
+
+  if (roomData.player1Id === user?.id) {
+    if (!user.username) {
+      return (
+        <>
+          <InviteLink />
+          <NameInput />
+          <CreateRoomButton />
+        </>
+      );
+    }
+    return (
+      <>
+        <InviteLink />
+        <CreateRoomButton />
+      </>
+    );
   }
 
   if (
-    !roomData?.player2Id ||
-    (!roomData.player1Name && playerId === roomData.player1Id)
+    (player?.id === roomData.player2Id && !roomData.player2Name) ||
+    !roomData.player2Id
   ) {
-    const handleCopyInviteLink = () => {
-      try {
-        navigator.clipboard
-          .writeText(inviteLink)
-          .then(() => toast.success("Invite link copied to clipboard!"));
-      } catch {
-        toast.error("Failed to copy...");
-      }
-    };
     return (
-      <div className=" flex-col text-black dark:text-white flex pt-8 w-full h-full justify-center items-center">
-        {!roomData.player1Name && playerId === roomData.player1Id && (
-          <div className="flex flex-col justify-center items-center py-8">
-            Invite link:{" "}
-            <button
-              type="button"
-              className="dark:text-blue-500 text-blue-700 truncate w-[240px]"
-              onClick={handleCopyInviteLink}
-            >
-              {inviteLink}
-            </button>
-            {linkCopied && <div>Copied to clipboard!</div>}
-          </div>
-        )}
-        <label htmlFor="name" className="py-4">
-          Name
-        </label>
-        <input
-          id="name"
-          autoFocus
-          type="text"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          className="outline-none rounded-md p-2 indent-1 bg-transparent border-black/10 dark:border-white/10 border"
-        ></input>
-        {!roomData.player1Name && playerId === roomData.player1Id ? (
-          <button
-            type="button"
-            className="mt-4 flex whitespace-nowrap py-2 px-4 dark:bg-green-700 bg-green-600 text-white rounded-md border dark:border-green-700 border-green-600"
-            onClick={handleJoinRoom}
-          >
-            Create Room
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="mt-4 flex whitespace-nowrap py-2 px-4 dark:bg-green-700 bg-green-600 text-white rounded-md border dark:border-green-700 border-green-600"
-            onClick={handleJoinRoom}
-          >
-            Join Room
-          </button>
-        )}
+      <div className=" flex h-full w-full flex-col items-center justify-center pt-8 text-black dark:text-white">
+        {!roomData?.player2Name && !user.username && <NameInput />}
+        <JoinRoomButton />
       </div>
     );
   }
 
-  if (!roomData.player1Name && playerId === roomData.player2Id) {
+  if (!roomData.player1Name && player?.id === roomData.player2Id) {
     return (
-      <div className="text-black dark:text-white flex flex-1 w-full h-full justify-center items-center">
+      <div className="flex h-full w-full flex-1 animate-pulse items-center justify-center pt-8 text-black dark:text-white">
         Waiting for player 1...
       </div>
     );
   }
+
   return (
-    <div className="text-black dark:text-white flex flex-1 w-full h-full justify-center items-center">
+    <div className="flex h-full w-full flex-1 items-center justify-center pt-8 text-black dark:text-white">
       Something went wrong.
     </div>
   );

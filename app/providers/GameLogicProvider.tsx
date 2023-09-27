@@ -33,7 +33,7 @@ export const useGameLogicContext = () => {
   const context = useContext(GameLogicContext);
   if (!context) {
     throw new Error(
-      "useGameLogicContext must be used within GameLogicProvider"
+      "useGameLogicContext must be used within GameLogicProvider",
     );
   }
   return context;

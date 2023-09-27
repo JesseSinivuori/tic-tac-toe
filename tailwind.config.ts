@@ -28,6 +28,10 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
+    screens: {
+      sm: "600px",
+      xss: "300px",
+    },
   },
   plugins: [require("tailwindcss-animate")],
 };

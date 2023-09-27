@@ -11,12 +11,14 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import {
-  getPlayerIdFromLocalStorage,
+  getPlayerFromLocalStorage,
   setGameModeToLocalStorage,
-  setPlayerIdToLocalStorage,
+  setPlayerToLocalStorage,
 } from "../lib/localStorage";
 import { GameMode } from "../providers/GameLogicProvider";
-import { RoomData } from "../room/[id]/page";
+import { PlayerProps, RoomData } from "../room/[id]/page";
+import { useSession } from "next-auth/react";
+import { useUser } from "../providers/UserProvider";
 
 export default function SelectGameMode({
   handleClickPlayAgainstAI,
@@ -40,18 +42,33 @@ export default function SelectGameMode({
   const router = useRouter();
   const createRoom = useMutation(api.rooms.createRoom);
 
+  const { user } = useUser();
+
   const handleClickPlayMultiplayer = () => {
     const newBoard = { board: generateBoard(board.size), size: board.size };
     setGameModeToLocalStorage({ gameMode: "MULTIPLAYER" });
-    let playerId = getPlayerIdFromLocalStorage();
 
-    if (!playerId) {
-      playerId = crypto.randomUUID();
-      setPlayerIdToLocalStorage(playerId);
+    let player: PlayerProps;
+    if (user && user.id) {
+      player = {
+        id: user.id,
+        name: user.username || "",
+      };
+    } else {
+      player = getPlayerFromLocalStorage();
+
+      if (!player) {
+        const newPlayerId = crypto.randomUUID();
+        player = {
+          id: newPlayerId,
+          name: "",
+        };
+        setPlayerToLocalStorage(player);
+      }
     }
 
-    createRoom({ playerId: playerId, board: newBoard }).then((roomId) =>
-      router.push(`/room/${roomId}`)
+    createRoom({ playerId: player.id, board: newBoard }).then((roomId) =>
+      router.push(`/room/${roomId}`),
     );
   };
 
@@ -72,10 +89,10 @@ export default function SelectGameMode({
       disabled={playerId !== roomData?.player1Id}
       onValueChange={(value: string) => handleValueChange(value)}
     >
-      <SelectTrigger className="w-[220px] bg-background dark:text-white text-black dark:border-white/10 border-black/10">
+      <SelectTrigger className="bg-background w-[220px] border-black/10 text-black dark:border-white/10 dark:text-white">
         <SelectValue placeholder="Opponent" />
       </SelectTrigger>
-      <SelectContent className="dark:bg-zinc-950 bg-zinc-50 dark:text-white text-black dark:border-white/10 border-black/10">
+      <SelectContent className="border-black/10 bg-zinc-50 text-black dark:border-white/10 dark:bg-zinc-950 dark:text-white">
         <SelectItem
           value="ai"
           disabled={board.size === 7}

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import SelectGridSize from "./SelectGridSize";
-import Button from "./ui/button";
+import { Button, ButtonRed } from "./ui/button";
 import { useSession } from "next-auth/react";
 import {
   getGameModeFromLocalStorage,
@@ -23,7 +23,9 @@ import { GameMode, useGameLogicContext } from "../providers/GameLogicProvider";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import Link from "next/link";
+import { useUser } from "../providers/UserProvider";
+import ChooseUserName from "./ChooseUserName";
+import { LinkComponentButtonRed } from "./ui/link";
 
 export type Board = {
   board: string[];
@@ -46,6 +48,7 @@ export default function HomeClient({
   const [board, setBoard] = useState<Board>(initialBoard);
   const { player, setPlayer, togglePlayer, toggleTurn, handleWinStreak } =
     usePlayer();
+  const { user } = useUser();
 
   useEffect(() => {
     //Handle joining multiplayer
@@ -123,7 +126,7 @@ export default function HomeClient({
         (winner === player.player && gameMode !== "MULTIPLAYER")
       ) {
         return (
-          <div className="text-5xl p-8 font-semibold text-center">
+          <div className="p-8 text-center text-5xl font-semibold">
             {winner}, you won
             {winStreak > 2 && ` with a ${winStreak} win streak`}! 🥳
           </div>
@@ -131,7 +134,7 @@ export default function HomeClient({
       }
       if (gameMode === "AI" && winner === player.opponent) {
         return (
-          <div className="text-5xl p-8 font-semibold text-center">
+          <div className="p-8 text-center text-5xl font-semibold">
             ChatGPT won
             {winStreak > 2 && ` with a ${winStreak} win streak`}! 🪄
           </div>
@@ -139,7 +142,7 @@ export default function HomeClient({
       }
       if (gameMode === "BOT" && winner === player.opponent) {
         return (
-          <div className="text-5xl p-8 font-semibold text-center">
+          <div className="p-8 text-center text-5xl font-semibold">
             Bot won
             {winStreak > 2 && ` with a ${winStreak} win streak`}! 🤖
           </div>
@@ -150,7 +153,7 @@ export default function HomeClient({
         const winStreak =
           roomData?.player1WinStreak || roomData?.player2WinStreak;
         return (
-          <div className="text-5xl p-8 font-semibold text-center">
+          <div className="p-8 text-center text-5xl font-semibold">
             {winner} won
             {winStreak > 2 && ` with a ${winStreak} win streak`}! 🥳
           </div>
@@ -160,12 +163,13 @@ export default function HomeClient({
 
     if (draw) {
       return (
-        <div className="text-5xl p-8 font-semibold text-center">Draw! </div>
+        <div className="p-8 text-center text-5xl font-semibold">Draw! </div>
       );
     }
   };
 
   const resetRoom = useMutation(api.rooms.resetRoom);
+
   const handlePlayAgain = () => {
     togglePlayer();
     setErrorMessage("");
@@ -180,7 +184,7 @@ export default function HomeClient({
           player,
           setAiRetries,
           setErrorMessage,
-          toggleTurn
+          toggleTurn,
         );
       }
       if (gameMode === "BOT") {
@@ -191,7 +195,7 @@ export default function HomeClient({
           winConditions,
           marksToWin,
           handleWinStreak,
-          toggleTurn
+          toggleTurn,
         );
       }
     }
@@ -209,7 +213,7 @@ export default function HomeClient({
         <button
           type="button"
           onClick={() => handlePlayAgain()}
-          className="flex whitespace-nowrap py-2 px-4 dark:bg-green-600 bg-green-500 text-white rounded-md border dark:border-green-600 border-green-500"
+          className="flex whitespace-nowrap rounded-md border border-green-500 bg-green-500 px-4 py-2 text-white dark:border-green-600 dark:bg-green-600"
         >
           Play Again
         </button>
@@ -221,7 +225,7 @@ export default function HomeClient({
     if (gameOver || errorMessage || loginRequired) return null;
     if (gameMode === "AI" && player.turn === "opponent") {
       return (
-        <p className="pb-8 animate-pulse">
+        <p className="animate-pulse pb-8">
           {`${player.opponent} is thinking${aiRetries <= 1 ? "..." : " "}`}
           {aiRetries > 1 ? `${aiRetries} moves ahead...` : ""}
         </p>
@@ -230,7 +234,7 @@ export default function HomeClient({
     if (gameMode === "MULTIPLAYER") {
       if (roomData?.currentTurn !== playerId) {
         return (
-          <p className="pb-8 animate-pulse">
+          <p className="animate-pulse pb-8">
             {`${player.opponent} is thinking...`}
           </p>
         );
@@ -257,7 +261,7 @@ export default function HomeClient({
         player,
         setAiRetries,
         setErrorMessage,
-        toggleTurn
+        toggleTurn,
       );
     }
     setErrorMessage("");
@@ -284,7 +288,7 @@ export default function HomeClient({
         winConditions,
         marksToWin,
         handleWinStreak,
-        toggleTurn
+        toggleTurn,
       );
     }
 
@@ -300,7 +304,7 @@ export default function HomeClient({
       player,
       setAiRetries,
       setErrorMessage,
-      toggleTurn
+      toggleTurn,
     );
     setErrorMessage("");
   };
@@ -331,7 +335,7 @@ export default function HomeClient({
         player,
         setAiRetries,
         setErrorMessage,
-        toggleTurn
+        toggleTurn,
       );
     }
     if (gameMode === "BOT" && player.turn === "opponent") {
@@ -342,7 +346,7 @@ export default function HomeClient({
         winConditions,
         marksToWin,
         handleWinStreak,
-        toggleTurn
+        toggleTurn,
       );
     }
     if (gameMode === "MULTIPLAYER" && playerId === roomData?.player1Id) {
@@ -356,35 +360,31 @@ export default function HomeClient({
   const RestartButton = () => (
     <Button
       disabled={playerId !== roomData?.player1Id}
-      className="disabled:cursor-not-allowed disabled:opacity-50"
       onClick={() => handleRestart()}
     >
       Restart
     </Button>
   );
 
-  const LeaveRoomButton = () => (
-    <>
-      {roomData && (
-        <Link
-          href="/"
-          onClick={() => setGameMode("LOCAL")}
-          className="px-4 py-2 text-white  dark:bg-red-700 bg-red-600 rounded-md border dark:border-red-700 border-red-600"
-        >
-          Leave Room
-        </Link>
-      )}
-    </>
-  );
+  const LeaveRoomButton = () =>
+    roomData && (
+      <LinkComponentButtonRed href="/" onClick={() => setGameMode("LOCAL")}>
+        Leave Room
+      </LinkComponentButtonRed>
+    );
 
   const Grid7x7Info = () => {
     if (board.size === 7)
       return <small className="p-2">AI can not play on 7x7 grid.</small>;
   };
 
+  if (user && !user.username) {
+    return <ChooseUserName />;
+  }
+
   return (
-    <div className="flex flex-col relative items-center pt-8 gap-4 h-full w-full overflow-hidden">
-      <div className="flex gap-4 flex-col sm:flex-row justify-center sm:items-center items-center w-full px-4">
+    <div className="relative flex h-full w-full flex-col items-center gap-4 overflow-hidden pt-8">
+      <div className="flex w-full flex-col items-center justify-center gap-4 px-4 sm:flex-row sm:items-center">
         <SelectGameMode
           handleClickPlayAgainstAI={handleClickPlayAgainstAI}
           handleClickPlayAgainstBot={handleClickPlayAgainstBot}

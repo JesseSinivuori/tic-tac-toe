@@ -14,6 +14,9 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { GameMode, useGameLogicContext } from "../providers/GameLogicProvider";
+import { useUser } from "../providers/UserProvider";
+import { fetchAddGameHistory } from "../models/user/user.fetch";
+import { GameSchema, gameSchema } from "../models/user/user.schema.zod";
 
 export const Square = ({
   index,
@@ -47,6 +50,7 @@ export const Square = ({
   playerId?: string | null;
 }) => {
   const { setGameStatus, gameStatus } = useGameLogicContext();
+  const { user } = useUser();
 
   const canClick = () => {
     const gameIsNotOver = board.board[index] === "E" && !gameOver;
@@ -72,15 +76,18 @@ export const Square = ({
   const handleMultiplayer = async () => {
     if (!roomData) throw new Error("roomData was not found.");
     if (roomData?.currentTurn === playerId) {
-      const newBoard = await makeTurn({
-        index: index,
-        playerId: playerId,
-        roomId: roomData._id as Id<"rooms">,
-      });
-      if (newBoard) {
-        return newBoard;
-      } else {
-        throw new Error("Failed to make turn.");
+      try {
+        const newBoard = await makeTurn({
+          index: index,
+          playerId: playerId,
+          roomId: roomData._id as Id<"rooms">,
+        });
+
+        if (newBoard) {
+          return newBoard;
+        }
+      } catch {
+        return;
       }
     }
   };
@@ -90,9 +97,9 @@ export const Square = ({
       if (gameStatus !== "ongoing") setGameStatus("ongoing");
 
       let newBoard = { ...board, board: [...board.board] };
-
       newBoard.board[index] =
         player.turn === "player" ? player.player : player.opponent;
+
       if (gameMode !== "MULTIPLAYER") {
         setBoard(newBoard);
       }
@@ -105,6 +112,46 @@ export const Square = ({
       const draw = checkDraw(newBoard, winConditions, marksToWin);
       const winner = checkWinner(newBoard, winConditions, marksToWin)?.winner;
 
+      if (
+        user &&
+        user.id &&
+        (draw || winner) &&
+        gameMode === "MULTIPLAYER" &&
+        roomData &&
+        roomData.player2Id
+      ) {
+        let gameResult: GameSchema = {
+          player1: {
+            userId: roomData.player1Id,
+            mark: player.player,
+          },
+          player2: {
+            userId: roomData.player2Id,
+            mark: player.player === "X" ? "O" : "X",
+          },
+        };
+
+        if (draw) {
+          gameResult.isDraw = true;
+        } else {
+          const winnerId =
+            roomData.currentTurn !== roomData.player1Id
+              ? roomData.player2Id
+              : roomData.player1Id;
+          const loserId =
+            winnerId === roomData.player1Id
+              ? roomData.player2Id
+              : roomData.player1Id;
+
+          gameResult.winnerId = winnerId;
+          gameResult.loserId = loserId;
+        }
+
+        gameSchema.parse(gameResult);
+
+        fetchAddGameHistory(gameResult, user);
+      }
+
       if (!draw && !winner && gameMode !== "LOCAL") {
         if (gameMode === "AI") {
           await getAiTurn(
@@ -113,7 +160,7 @@ export const Square = ({
             player,
             setAiRetries,
             setErrorMessage,
-            toggleTurn
+            toggleTurn,
           );
         }
         if (gameMode === "BOT") {
@@ -124,7 +171,7 @@ export const Square = ({
             winConditions,
             marksToWin,
             handleWinStreak,
-            toggleTurn
+            toggleTurn,
           );
         }
       }
@@ -205,7 +252,9 @@ export const Square = ({
       gameMode !== "MULTIPLAYER" &&
       board.board[index] === "E";
     const waitingForOpponentMultiplayer =
-      board.board[index] === "E" && playerId !== roomData?.currentTurn;
+      board.board[index] === "E" &&
+      playerId !== roomData?.currentTurn &&
+      roomData?.gameStatus === "ongoing";
     const isWaiting = waitingForOpponent || waitingForOpponentMultiplayer;
     return isWaiting;
   };
@@ -218,9 +267,9 @@ export const Square = ({
         canClick() ? "cursor-pointer hover:bg-zinc-500/10" : "cursor-default"
       }
        ${isWaitingForOpponent() && "animate-pulse"} border ${
-        !winnerIndices?.includes(index) &&
-        "dark:border-white/20 border-zinc-950/20"
-      } sm:m-2 m-1 flex items-center rounded-md justify-center font-medium text-[40px] w-[80px] h-[80px]`}
+         !winnerIndices?.includes(index) &&
+         "border-zinc-950/20 dark:border-white/20"
+       } m-1 flex h-[80px] w-[80px] items-center justify-center rounded-md text-[40px] font-medium sm:m-2`}
       onClick={() => handleClick()}
       onKeyDown={(e) => handleArrowKeyPress(e)}
     >

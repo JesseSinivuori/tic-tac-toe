@@ -1,14 +1,8 @@
 import { ThemeButtonClient } from "./ThemeButtonClient";
-import { cookies } from "next/headers";
 
 export function ThemeButton({ className }: { className?: string }) {
-  const darkModeCookie: boolean = JSON.parse(
-    cookies().get("darkMode")?.value ?? "true"
-  );
-
   return (
     <ThemeButtonClient
-      darkModeCookie={darkModeCookie}
       className={className}
       LightModeIcon={<LightModeIcon />}
       DarkModeIcon={<DarkModeIcon />}

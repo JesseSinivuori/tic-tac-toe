@@ -1,45 +1,51 @@
 "use client";
-import { useState } from "react";
+import { useMobileMenuContext } from "@/app/providers/MobileMenuProvider";
+import { SeparatorHorizontal } from "../ui/separator";
+import { useEffect } from "react";
 
 export default function MobileMenu({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
+  const { mobileMenuIsOpen, setMobileMenuIsOpen } = useMobileMenuContext();
 
   const handleToggleMobileMenu = () => {
     setMobileMenuIsOpen(!mobileMenuIsOpen);
-    const body = document.querySelector("body");
-    if (!mobileMenuIsOpen) {
-      body?.classList.add("overflow-hidden");
-    } else {
-      body?.classList.remove("overflow-hidden");
-    }
   };
+
+  useEffect(() => {
+    const body = document.body;
+    if (mobileMenuIsOpen) {
+      body.classList.add("overflow-hidden");
+    } else {
+      body.classList.remove("overflow-hidden");
+    }
+  }, [mobileMenuIsOpen]);
+
   return (
-    <div className="flex sm:hidden">
+    <div className={`${mobileMenuIsOpen ? "flex" : "sm:hidden"}`}>
       <MobileMenuButton onClick={handleToggleMobileMenu}>
         <MobileMenuOpenIcon />
       </MobileMenuButton>
       {mobileMenuIsOpen && (
         <div
           onClick={handleToggleMobileMenu}
-          className="fixed top-0 left-0 w-full h-full z-[9998]"
+          className="fixed inset-0 z-[9997] h-full w-full "
         ></div>
       )}
       <div
         className={`${
           mobileMenuIsOpen
-            ? "fixed w-screen h-screen z-[9999] bg-white"
+            ? "absolute bottom-0 top-0 h-full min-h-screen w-full overflow-hidden"
             : "hidden"
-        } flex-col fixed right-0 top-0 bottom-0 max-w-[240px] w-full h-full dark:bg-zinc-950 bg-zinc-50 border-l dark:border-white/10 border-black/10`}
+        }  bottom-0 right-0 top-0 z-[9999] h-full min-h-screen w-full max-w-[280px] flex-col border-l border-r border-black/10  bg-zinc-50 dark:border-white/10 dark:bg-zinc-950`}
       >
-        <div className="flex justify-start items-stretch gap-4 flex-col h-full w-full p-4">
+        <div className="absolute bottom-0 right-0 top-0 flex h-full min-h-screen w-full flex-col items-stretch justify-start gap-3 overflow-hidden px-2 py-3 ">
           <MobileMenuButton onClick={handleToggleMobileMenu}>
             <MobileMenuCloseIcon />
           </MobileMenuButton>
-          <div className="py-2 border-t dark:border-white/10 border-black/10"></div>
+          <SeparatorHorizontal />
           {children}
         </div>
       </div>
@@ -52,7 +58,7 @@ const MobileMenuOpenIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="currentColor"
-    className="w-6 h-6"
+    className="h-6 w-6"
   >
     <path
       fillRule="evenodd"
@@ -67,7 +73,7 @@ const MobileMenuCloseIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="currentColor"
-    className="w-6 h-6"
+    className="h-6 w-6"
   >
     <path
       fillRule="evenodd"
@@ -87,7 +93,7 @@ const MobileMenuButton = ({
   <button
     type="button"
     onClick={onClick}
-    className="p-2 flex justify-start border dark:border-white/10 border-black/10 rounded-md "
+    className="flex justify-start rounded-md border border-black/10 p-2 dark:border-white/10 "
   >
     {children}
   </button>

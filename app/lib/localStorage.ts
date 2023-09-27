@@ -21,19 +21,23 @@ export const getGameModeFromLocalStorage = () => {
   }
 };
 
-export const setPlayerIdToLocalStorage = (playerId: string) => {
+export const setPlayerToLocalStorage = (player: {
+  id: string;
+  name: string;
+}) => {
   if (window === undefined) {
-    throw new Error("setPlayerIdLocalStorage can only be used on Client.");
+    throw new Error("setPlayerToLocalStorage can only be used on Client.");
   }
-  window.localStorage.setItem("playerId", playerId);
+  window.localStorage.setItem("player", JSON.stringify(player));
 };
 
-export const getPlayerIdFromLocalStorage = () => {
+export const getPlayerFromLocalStorage = () => {
   if (window === undefined) {
-    throw new Error("getPlayerIdFromLocalStorage can only be used on Client.");
+    throw new Error("getPlayerFromLocalStorage can only be used on Client.");
   }
-  const playerIdInStorage = window.localStorage.getItem("playerId");
-  if (playerIdInStorage) {
-    return playerIdInStorage;
+  const playerInStorage = window.localStorage.getItem("player");
+  if (playerInStorage) {
+    const parsedPlayer = JSON.parse(playerInStorage);
+    return parsedPlayer;
   }
 };

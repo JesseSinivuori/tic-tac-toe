@@ -1,9 +1,13 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
-const authOptions: NextAuthOptions = {
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+export const authOptions: NextAuthOptions = {
   // Secret for Next-auth, without this JWT encryption/decryption won't work
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/sign-in",
+  },
   // Configure one or more authentication providers
   providers: [
     GithubProvider({
@@ -17,6 +21,29 @@ const authOptions: NextAuthOptions = {
           : process.env.GITHUB_SECRET_DEV!,
     }),
   ],
+  callbacks: {
+    async signIn({ user }) {
+      const email = user.email;
+
+      const res = await fetch(`${baseUrl}/api/users/sign-in`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong.");
+      }
+
+      return true;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

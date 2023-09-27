@@ -3,11 +3,14 @@ declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
 
-const MONGODB_URI = process.env.MONGODB_URI!;
+const MONGODB_URI =
+  process.env.NODE_ENV === "production"
+    ? process.env.MONGODB_URI!
+    : process.env.MONGODB_URI_DEV!;
 
 if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+    "Please define the MONGODB_URI environment variable inside .env.local",
   );
 }
 
@@ -17,7 +20,7 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-async function db() {
+async function dbConnect() {
   if (cached.conn) {
     return cached.conn;
   }
@@ -41,4 +44,4 @@ async function db() {
   return cached.conn;
 }
 
-export default db;
+export default dbConnect;
