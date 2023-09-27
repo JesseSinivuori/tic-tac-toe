@@ -16,6 +16,8 @@ import {
 import { Card } from "@/app/components/ui/card";
 import ChooseUserName from "@/app/components/ChooseUserName";
 
+export const dynamic = "force-dynamic";
+
 const getPopulatedPlayer = (player: PlayerSchema): PopulatedPlayerSchema => {
   return {
     id: typeof player.userId !== "string" && player.userId.id,
@@ -46,7 +48,7 @@ export default async function History({
     <div className="flex h-full w-full flex-col items-center justify-center pt-8">
       <div className="flex flex-col">
         <Title username={username} />
-        <p className="flex items-center justify-center text-zinc-950/75 dark:text-zinc-50/75">
+        <p className="flex items-center justify-center hyphens-auto text-zinc-950/75 dark:text-zinc-50/75">
           Match history currently only supports multiplayer games.
         </p>
       </div>
@@ -93,12 +95,17 @@ const PaginationButtons = ({
   id,
   limit,
 }: PaginationButtonsProps) => {
-  const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+  const nextPage = currentPage < totalPages ? currentPage + 1 : currentPage;
   const prevPage = currentPage > 1 ? currentPage - 1 : 1;
+
+  if (!totalPages || totalPages === 1) return null;
+
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-3 whitespace-nowrap pt-16">
       <LinkComponentOutline
         href={`/game-history/${id}/?page=${prevPage}&limit=${limit}`}
+        replace={true}
+        scroll={false}
       >
         Previous
       </LinkComponentOutline>
@@ -107,6 +114,8 @@ const PaginationButtons = ({
       </div>
       <LinkComponentOutline
         href={`/game-history/${id}/?page=${nextPage}&limit=${limit}`}
+        replace={true}
+        scroll={false}
       >
         Next
       </LinkComponentOutline>
@@ -137,9 +146,8 @@ const Game = ({
   const playerMark = userId === player1.userId.id ? player1.mark : player2.mark;
   const opponentMark =
     userId !== player1.userId.id ? player1.mark : player2.mark;
-  const opponentUserId = (userId = player1.userId.id
-    ? player2.userId.id
-    : player1.userId.id);
+  const opponentUserId =
+    userId === player1.userId.id ? player2.userId.id : player1.userId.id;
   const opponentUsername =
     username === player1.userId.username
       ? player2.userId.username
@@ -148,19 +156,19 @@ const Game = ({
   const ResultText = () => {
     if (winner)
       return (
-        <div className="flex w-[70px] items-center justify-center  rounded-md bg-green-600 px-3 py-1 text-xl font-medium text-zinc-50/90 dark:bg-green-700">
+        <div className="flex w-[70px] items-center justify-center rounded-md bg-green-600 px-3 py-1 text-lg font-bold text-zinc-50/90 dark:bg-green-700">
           Won
         </div>
       );
     if (loser)
       return (
-        <div className="flex w-[70px] items-center justify-center  rounded-md bg-red-700 px-3 py-1 text-xl font-medium text-zinc-50/90 dark:bg-red-600">
+        <div className="flex w-[70px] items-center justify-center rounded-md bg-red-700 px-3 py-1 text-lg font-bold text-zinc-50/90 dark:bg-red-600">
           Lost
         </div>
       );
     if (isDraw)
       return (
-        <div className="flex w-[70px] items-center justify-center rounded-md bg-amber-500 px-3 py-1 text-xl font-medium text-zinc-50/90 dark:bg-amber-600">
+        <div className="flex w-[70px] items-center justify-center rounded-md bg-amber-500 px-3 py-1 text-lg font-bold text-zinc-50/90 dark:bg-amber-600">
           Draw
         </div>
       );
@@ -168,39 +176,34 @@ const Game = ({
 
   return (
     <div className="flex w-full flex-col items-center justify-center py-1">
-      <Card className="max-w-[800px]">
+      <Card className="max-w-[800px] ">
         <div
-          className={`flex w-full flex-col 
-        `}
+          className={`flex w-full flex-col items-center justify-center gap-6 whitespace-nowrap  rounded-md font-semibold xss:flex-row xss:flex-wrap `}
         >
-          <div
-            className={`flex w-full flex-wrap items-center justify-between gap-6 whitespace-nowrap rounded-md font-semibold `}
-          >
-            <ResultText />
-            <div className="flex h-full w-full flex-1 items-center justify-around gap-3 whitespace-nowrap font-medium text-zinc-950/90 dark:text-zinc-50/90">
-              <div className="flex items-center">
-                <LinkComponentBlue
-                  href={`/game-history/${userId}`}
-                  className="truncate !p-0"
-                >
-                  {username}
-                </LinkComponentBlue>
-                <span className="">{`${": "}${playerMark}`}</span>
-              </div>
-              vs
-              <div className="flex items-center">
-                <LinkComponentBlue
-                  href={`/game-history/${opponentUserId}`}
-                  className="truncate !p-0"
-                >
-                  {opponentUsername}
-                </LinkComponentBlue>
-                <span>{`${": "}${opponentMark}`}</span>
-              </div>
+          <ResultText />
+          <div className="flex h-full w-full flex-1 flex-col items-center justify-around gap-3 whitespace-nowrap font-medium text-zinc-950/90 dark:text-zinc-50/90 sm:flex-row">
+            <div className="flex items-center">
+              <LinkComponentBlue
+                href={`/game-history/${userId}`}
+                className="!p-0"
+              >
+                {username}
+              </LinkComponentBlue>
+              <span className="">{`${": "}${playerMark}`}</span>
             </div>
-            <div className="flex items-center justify-center text-sm text-zinc-950/75 dark:text-zinc-50/75">
-              {gamePlayedDaysAgo}
+            <span className="flex items-center justify-center">vs</span>
+            <div className="flex items-center">
+              <LinkComponentBlue
+                href={`/game-history/${opponentUserId}`}
+                className="!p-0"
+              >
+                {opponentUsername}
+              </LinkComponentBlue>
+              <span>{`${": "}${opponentMark}`}</span>
             </div>
+          </div>
+          <div className="flex min-w-[100px] items-center justify-center text-sm text-zinc-950/75 dark:text-zinc-50/75">
+            {gamePlayedDaysAgo}
           </div>
         </div>
       </Card>
@@ -230,28 +233,40 @@ const Stats = ({ wins, losses, draws, totalGames }: StatsProps) => {
     <div className="flex w-full flex-col items-center justify-center gap-3 pt-6 sm:gap-6">
       <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:gap-6">
         <div className="flex w-1/4 min-w-[100px] flex-1 flex-col items-center justify-center rounded-md bg-green-600 p-1 !text-zinc-50/90 dark:bg-green-700">
-          <h2 className="text-xl font-semibold">Wins</h2>
+          <h2 className="text-xl font-bold">Wins</h2>
           <p className="text-xl font-extrabold ">{wins}</p>
         </div>
 
         <div className="flex w-1/4 min-w-[100px] flex-1 flex-col items-center justify-center rounded-md bg-red-700 p-1 !text-zinc-50/90 dark:bg-red-600 ">
-          <h2 className="text-xl font-semibold">Losses</h2>
+          <h2 className="text-xl font-bold">Losses</h2>
           <p className="text-xl font-extrabold ">{losses}</p>
         </div>
         <div className="flex w-1/4 min-w-[100px] flex-1 flex-col items-center justify-center rounded-md  bg-amber-500 p-1 !text-zinc-50/90 dark:bg-amber-600">
-          <h2 className="text-xl font-semibold">Draws</h2>
+          <h2 className="text-xl font-bold">Draws</h2>
           <p className="text-xl font-extrabold ">{draws}</p>
         </div>
       </div>
-      <div className="flex w-full min-w-[100px] flex-1 flex-col items-center justify-center rounded-md p-1 !text-zinc-50/90 ">
-        <h2 className="text-xl font-semibold text-zinc-950/90 dark:text-zinc-50/90">
-          Win Rate
-        </h2>
-        <p
-          className={`text-xl font-extrabold text-zinc-950/90 dark:text-zinc-50/90`}
-        >
-          {winRatePercent}%
-        </p>
+      <div className="flex flex-wrap items-center justify-center gap-6">
+        <div className="flex w-full min-w-[100px] flex-1 flex-col items-center justify-center rounded-md p-1 !text-zinc-50/90 ">
+          <h2 className="whitespace-nowrap text-xl font-bold text-zinc-950/90 dark:text-zinc-50/90">
+            Win Rate
+          </h2>
+          <p
+            className={`text-xl font-extrabold text-zinc-950/90 dark:text-zinc-50/90`}
+          >
+            {winRatePercent ? `${winRatePercent}%` : "-"}
+          </p>
+        </div>
+        <div className="flex w-full min-w-[100px] flex-1 flex-col items-center justify-center rounded-md p-1 !text-zinc-50/90 ">
+          <h2 className="whitespace-nowrap text-xl font-bold text-zinc-950/90 dark:text-zinc-50/90">
+            Total Games
+          </h2>
+          <p
+            className={`text-xl font-extrabold text-zinc-950/90 dark:text-zinc-50/90`}
+          >
+            {totalGames ? `${totalGames}` : "-"}
+          </p>
+        </div>
       </div>
     </div>
   );

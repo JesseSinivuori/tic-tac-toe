@@ -30,7 +30,7 @@ const config: Config = {
     },
     screens: {
       sm: "600px",
-      xss: "300px",
+      xss: "375px",
     },
   },
   plugins: [require("tailwindcss-animate")],

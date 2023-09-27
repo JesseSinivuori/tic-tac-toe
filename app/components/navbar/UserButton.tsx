@@ -2,7 +2,6 @@
 import type { Session } from "next-auth";
 import { useMobileMenuContext } from "@/app/providers/MobileMenuProvider";
 import { UserAvatar } from "../UserAvatar";
-import { useUser } from "@/app/providers/UserProvider";
 import { UserName } from "./UserName";
 
 export default function UserButton({ session }: { session: Session | null }) {
