@@ -14,8 +14,15 @@ type User = {
 };
 
 export default async function Leaderboard() {
-  const users: User[] | undefined = await getLeaderboard();
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      Testing to fix nextauth bug...
+    </div>
+  );
+}
 
+const LeaderboardContent = async () => {
+  const users: User[] | undefined = await getLeaderboard();
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       <Title />
@@ -30,7 +37,7 @@ export default async function Leaderboard() {
       </Suspense>
     </div>
   );
-}
+};
 
 const Title = () => {
   return (
