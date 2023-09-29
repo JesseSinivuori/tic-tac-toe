@@ -5,7 +5,6 @@ import { UserSchema } from "@/app/models/user/user.schema.zod";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const clientId =
   process.env.NODE_ENV === "production"
     ? process.env.GITHUB_ID!
