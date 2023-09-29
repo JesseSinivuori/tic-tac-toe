@@ -1,7 +1,5 @@
-import { useSearchParams } from "next/navigation";
-import { Button } from "./ui/button";
 import { PaginationProps } from "../models/user/user.fetch";
-import { LinkComponent, LinkComponentOutline } from "./ui/link";
+import { LinkComponentOutline } from "./ui/link";
 
 export function GameHistoryClient({
   pagination,
@@ -10,8 +8,6 @@ export function GameHistoryClient({
   pagination: PaginationProps;
   children: React.ReactNode;
 }) {
-  console.log("🚀 ~ file: GameHistoryClient.tsx:14 ~ pagination:", pagination);
-
   const PaginationButtons = () => {
     return (
       <div className="flex gap-3 pt-16">
