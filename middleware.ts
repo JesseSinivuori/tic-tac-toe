@@ -5,10 +5,8 @@ export default withAuth(
   function middleware(req) {
     const cspHeader = `
     default-src 'self';
-    script-src 'self' ${
-      process.env.NODE_ENV === "development"
-        ? `'unsafe-eval' 'unsafe-inline'`
-        : ""
+    script-src 'self' 'unsafe-inline' ${
+      process.env.NODE_ENV === "development" ? `'unsafe-eval'` : ""
     };
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://avatars.githubusercontent.com/;
