@@ -3,24 +3,24 @@ import { MarksToWin } from "../lib/gameLogic/winConditions";
 import { GameMode } from "../providers/GameLogicProvider";
 import { Player, usePlayer } from "../lib/gameLogic/usePlayer";
 import { RoomData } from "../room/[id]/page";
+import { useUser } from "../providers/UserProvider";
 
 export const GameInfo = ({
-  session,
   gameMode,
   marksToWin,
   player,
   playerId,
   roomData,
 }: {
-  session: Session | null;
   gameMode: GameMode;
   marksToWin: MarksToWin;
   player: Player;
   playerId: string | null | undefined;
   roomData: RoomData;
 }) => {
+  const { user } = useUser();
   if (gameMode === "AI") {
-    if (!session)
+    if (!user)
       return (
         <>
           <p className="p-2">Please sign in to play against ChatGPT.</p>
@@ -28,7 +28,7 @@ export const GameInfo = ({
       );
     return (
       <p className="p-2">
-        Playing against AI. Place {marksToWin} in a row to win.
+        Playing against ChatGPT. Place {marksToWin} in a row to win.
       </p>
     );
   }

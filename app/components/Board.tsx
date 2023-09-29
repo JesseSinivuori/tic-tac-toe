@@ -1,4 +1,4 @@
-import { Session } from "next-auth";
+"use client";
 import SignInButton from "./SignInButton";
 import { Square } from "./Square";
 import type { Board as TBoard } from "./HomeClient";
@@ -6,9 +6,9 @@ import { MarksToWin, WinConditions } from "../lib/gameLogic/winConditions";
 import { Mark, Player } from "../lib/gameLogic/usePlayer";
 import { RoomData } from "../room/[id]/page";
 import { GameMode } from "../providers/GameLogicProvider";
+import { useUser } from "../providers/UserProvider";
 
 export const Board = ({
-  session,
   board,
   gameOver,
   setBoard,
@@ -17,14 +17,12 @@ export const Board = ({
   marksToWin,
   player,
   toggleTurn,
-  togglePlayer,
   handleWinStreak,
   setAiRetries,
   setErrorMessage,
   roomData,
   playerId,
 }: {
-  session: Session | null;
   board: TBoard;
   gameOver: boolean;
   setBoard: React.Dispatch<React.SetStateAction<TBoard>>;
@@ -40,7 +38,8 @@ export const Board = ({
   roomData: RoomData;
   playerId?: string | null;
 }) => {
-  if (!session && gameMode === "AI") {
+  const { user } = useUser();
+  if (!user && gameMode === "AI") {
     return <SignInButton />;
   }
 

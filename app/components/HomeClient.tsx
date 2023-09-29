@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import SelectGridSize from "./SelectGridSize";
-import { Button, ButtonRed } from "./ui/button";
-import { useSession } from "next-auth/react";
+import { Button } from "./ui/button";
 import {
   getGameModeFromLocalStorage,
   setGameModeToLocalStorage,
@@ -42,7 +41,6 @@ export default function HomeClient({
   roomData: RoomData;
   playerId?: string | null;
 }) {
-  const { data: session } = useSession();
   const { gameStatus, gameMode, setGameMode } = useGameLogicContext();
   const initialBoard = { board: generateBoard(3), size: 3 };
   const [board, setBoard] = useState<Board>(initialBoard);
@@ -81,7 +79,7 @@ export default function HomeClient({
     }
   }, [gameMode, playerId, roomData, setGameMode, setPlayer]);
 
-  const loginRequired = !session && gameMode === "AI";
+  const loginRequired = !user && gameMode === "AI";
 
   const [aiRetries, setAiRetries] = useState(0);
 
@@ -407,7 +405,6 @@ export default function HomeClient({
       </div>
       <Grid7x7Info />
       <GameInfo
-        session={session}
         gameMode={gameMode}
         marksToWin={marksToWin}
         player={player}
@@ -417,7 +414,6 @@ export default function HomeClient({
       <GameOver />
       <PlayAgainButton />
       <Board
-        session={session}
         board={board}
         gameOver={gameOver}
         setBoard={setBoard}

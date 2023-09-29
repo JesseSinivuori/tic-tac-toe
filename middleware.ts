@@ -16,7 +16,8 @@ export default withAuth(
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-    worker-src 'self' blob:
+    worker-src 'self' blob:;
+    connect-src 'self' wss://sensible-guineapig-904.convex.cloud/;
 `;
 
     const requestHeaders = new Headers(req.headers);
