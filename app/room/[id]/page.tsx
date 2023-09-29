@@ -50,7 +50,10 @@ export type PlayerProps =
 
 export default function Room({ params: { id } }: RoomProps) {
   const { user } = useUser();
+
   const [player, setPlayer] = useState<PlayerProps>(null);
+  console.log("🚀 ~ file: page.tsx:55 ~ Room ~ player:", player);
+
   const playerNameRef = useRef<HTMLInputElement>(null);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -60,7 +63,7 @@ export default function Room({ params: { id } }: RoomProps) {
   });
 
   const joinRoom = useMutation(api.rooms.joinRoom);
-
+  console.log(roomData);
   useEffect(() => {
     if (user && user?.username && user.id) {
       const newPlayer = {
@@ -88,25 +91,26 @@ export default function Room({ params: { id } }: RoomProps) {
       setPlayer(player);
       return player;
     }
+
     if (!user) {
       const storedPlayer = getPlayerFromLocalStorage();
 
-      if (!storedPlayer) {
-        const newPlayerId = crypto.randomUUID();
-        const playerName =
-          playerNameRef.current?.value ||
-          (newPlayerId === roomData?.player1Id ? "X" : "O");
-        const newPlayer = {
-          id: newPlayerId,
-          name: playerName,
-        };
-        setPlayerToLocalStorage(newPlayer);
-        setPlayer(newPlayer);
-        return newPlayer;
-      } else {
-        setPlayer(storedPlayer);
-        return storedPlayer;
+      let player = { ...storedPlayer };
+
+      if (!player.id) {
+        player.id = crypto.randomUUID();
       }
+
+      if (!player.name) {
+        player.name =
+          playerNameRef.current?.value ||
+          (player.id === roomData?.player1Id ? "X" : "O");
+      }
+
+      setPlayerToLocalStorage(player);
+      setPlayer(player);
+
+      return player;
     }
   };
 
@@ -118,7 +122,7 @@ export default function Room({ params: { id } }: RoomProps) {
         throw new Error("Player was not found.");
       }
 
-      joinRoom({
+      await joinRoom({
         roomId: id as Id<"rooms">,
         playerId: player.id,
         playerName: player.name,
@@ -142,36 +146,18 @@ export default function Room({ params: { id } }: RoomProps) {
       </div>
     );
   }
-  if (
-    roomData?.waitingForPlayer2ToJoin &&
-    roomData.player1Name &&
-    player?.id === roomData.player1Id
-  ) {
-    return (
-      <div className="flex h-full w-full flex-1 animate-pulse items-center justify-center pt-8 text-black dark:text-white">
-        Waiting for player 2...
-      </div>
-    );
-  }
 
   if (
-    !roomData?.waitingForPlayer2ToJoin &&
     player?.id !== roomData?.player1Id &&
-    player?.id !== roomData?.player2Id
+    player?.id !== roomData?.player2Id &&
+    roomData?.player1Name &&
+    roomData?.player2Name
   ) {
     return (
       <div className="flex h-full w-full flex-1 items-center justify-center pt-8 text-black dark:text-white">
         Room is full.
       </div>
     );
-  }
-
-  if (
-    !roomData?.waitingForPlayer2ToJoin &&
-    roomData.player1Name &&
-    roomData.player2Name
-  ) {
-    return <HomeClient roomData={roomData} playerId={player?.id} />;
   }
 
   const NameInput = () => (
@@ -221,11 +207,11 @@ export default function Room({ params: { id } }: RoomProps) {
     </ButtonGreen>
   );
 
-  if (!user?.username) {
+  if (user && !user?.username) {
     return <ChooseUserName />;
   }
 
-  if (roomData.player1Id === user?.id) {
+  if (roomData.player1Id === user?.id && !player?.name) {
     if (!user.username) {
       return (
         <>
@@ -243,14 +229,29 @@ export default function Room({ params: { id } }: RoomProps) {
     );
   }
 
-  if (
-    (player?.id === roomData.player2Id && !roomData.player2Name) ||
-    !roomData.player2Id
-  ) {
+  if (player?.id === roomData.player1Id && !roomData.player1Name) {
     return (
       <div className=" flex h-full w-full flex-col items-center justify-center pt-8 text-black dark:text-white">
-        {!roomData?.player2Name && !user.username && <NameInput />}
+        <InviteLink />
+        {!roomData.player1Name && !user && <NameInput />}
         <JoinRoomButton />
+      </div>
+    );
+  }
+
+  if (player?.id !== roomData.player1Id && roomData.waitingForPlayer2ToJoin) {
+    return (
+      <div className=" flex h-full w-full flex-col items-center justify-center pt-8 text-black dark:text-white">
+        {!roomData.player2Name && !user && <NameInput />}
+        <JoinRoomButton />
+      </div>
+    );
+  }
+
+  if (!roomData.player2Name && roomData.player1Id === player?.id) {
+    return (
+      <div className="flex h-full w-full flex-1 animate-pulse items-center justify-center pt-8 text-black dark:text-white">
+        Waiting for player 2...
       </div>
     );
   }
@@ -261,6 +262,14 @@ export default function Room({ params: { id } }: RoomProps) {
         Waiting for player 1...
       </div>
     );
+  }
+
+  if (
+    roomData?.player1Name &&
+    roomData?.player2Name &&
+    !roomData.waitingForPlayer2ToJoin
+  ) {
+    return <HomeClient roomData={roomData} playerId={player?.id} />;
   }
 
   return (

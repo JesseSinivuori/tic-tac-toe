@@ -62,7 +62,7 @@ export const LinkComponentButtonGreen = ({
 }: LinkComponentProps) => {
   return (
     <LinkComponent
-      className={`!border-green-700 !bg-green-700 !text-white/90 hover:!border-green-800 hover:!bg-green-800 dark:!border-green-800 dark:!bg-green-800 dark:hover:!border-green-700 dark:hover:!bg-green-700 ${
+      className={`!border-green-700 !bg-green-700 px-3 py-2 !text-white/90 hover:!border-green-800 hover:!bg-green-800 dark:!border-green-800 dark:!bg-green-800 dark:hover:!border-green-700 dark:hover:!bg-green-700 ${
         className || ""
       }`}
       {...props}
@@ -79,7 +79,7 @@ export const LinkComponentButtonRed = ({
 }: LinkComponentProps) => {
   return (
     <LinkComponent
-      className={`!border-red-700 !bg-red-700 !text-white/90 hover:!border-red-800 hover:!bg-red-800 dark:!border-red-800 dark:!bg-red-800 dark:hover:!border-red-700 dark:hover:!bg-red-700 ${
+      className={`!border-red-700 !bg-red-700 px-3 py-2 !text-white/90 hover:!border-red-800 hover:!bg-red-800 dark:!border-red-800 dark:!bg-red-800 dark:hover:!border-red-700 dark:hover:!bg-red-700 ${
         className || ""
       }`}
       {...props}

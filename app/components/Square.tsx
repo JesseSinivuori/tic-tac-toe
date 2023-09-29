@@ -147,7 +147,8 @@ export const Square = ({
           gameResult.loserId = loserId;
         }
 
-        gameSchema.parse(gameResult);
+        const parseRes = gameSchema.safeParse(gameResult);
+        if (!parseRes.success) return;
 
         fetchAddGameHistory(gameResult, user);
       }

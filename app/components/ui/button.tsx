@@ -34,7 +34,7 @@ export const ButtonGreen = ({ className, children, ...props }: ButtonProps) => {
 export const ButtonRed = ({ className, children, ...props }: ButtonProps) => {
   return (
     <Button
-      className={`!border-red-700 !bg-red-700 !text-white/90 hover:!border-red-800 hover:!bg-red-800 dark:!border-red-800 dark:!bg-red-800 dark:hover:!border-red-700 dark:hover:!bg-red-700 ${
+      className={`!border-red-700  !bg-red-700 !text-white/90 hover:!border-red-800 hover:!bg-red-800 dark:!border-red-800 dark:!bg-red-800 dark:hover:!border-red-700 dark:hover:!bg-red-700 ${
         className || ""
       }`}
       {...props}

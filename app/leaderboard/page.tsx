@@ -20,7 +20,7 @@ export default async function Leaderboard() {
     <div className="flex h-full w-full flex-col items-center justify-center">
       <Title />
       <p className="flex items-center justify-center hyphens-auto pb-6 text-zinc-950/75 dark:text-zinc-50/75">
-        The top 100 multiplayer players.
+        The top 100 multiplayer accounts.
       </p>
       <SeparatorHorizontal className="py-6" />
       <Suspense fallback={<Loading />}>
