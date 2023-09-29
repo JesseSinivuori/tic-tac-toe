@@ -1,3 +1,4 @@
+"use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { UserSchema } from "../models/user/user.schema.zod";
 import { useSession } from "next-auth/react";
