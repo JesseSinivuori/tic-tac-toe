@@ -9,6 +9,8 @@ import { cookies } from "next/headers";
 import Footer from "./components/Footer";
 import ClientProviders from "./providers/ClientProviders";
 
+export const dynamic = "force-dynamic";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
