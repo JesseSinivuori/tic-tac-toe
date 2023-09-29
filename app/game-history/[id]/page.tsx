@@ -15,6 +15,7 @@ import {
 } from "@/app/components/ui/link";
 import { Card } from "@/app/components/ui/card";
 import ChooseUserName from "@/app/components/ChooseUserName";
+import Loading from "@/app/loading";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +38,7 @@ export default async function History({
   const limitAsNumber = Number(limit) || 10;
   const data = await fetchUserWithGameHistory(id, pageAsNumber, limitAsNumber);
 
-  if (!data) return <div className="animate-pulse pt-8">Loading...</div>;
+  if (!data) return <Loading />;
   const { gameHistory, username } = data.user;
 
   if (!username) {
