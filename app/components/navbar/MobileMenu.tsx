@@ -41,13 +41,13 @@ export default function MobileMenu({
             : "hidden"
         }  bottom-0 right-0 top-0 z-[9999] h-full min-h-screen w-full max-w-[280px] flex-col border-l border-r border-black/10 bg-zinc-50 dark:border-white/10 dark:bg-zinc-950`}
       >
-        <div className="absolute bottom-0 right-0 top-0 flex h-full min-h-screen w-full flex-col items-stretch justify-start gap-3 overflow-hidden px-2 py-3 ">
+        <aside className="absolute bottom-0 right-0 top-0 flex h-full min-h-screen w-full flex-col items-stretch justify-start gap-3 overflow-hidden overflow-y-auto px-2 py-3 ">
           <MobileMenuButton onClick={handleToggleMobileMenu}>
             <MobileMenuCloseIcon />
           </MobileMenuButton>
           <SeparatorHorizontal />
           {children}
-        </div>
+        </aside>
       </div>
     </div>
   );

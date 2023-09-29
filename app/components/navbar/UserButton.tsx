@@ -1,10 +1,9 @@
 "use client";
-import type { Session } from "next-auth";
 import { useMobileMenuContext } from "@/app/providers/MobileMenuProvider";
 import { UserAvatar } from "../UserAvatar";
 import { UserName } from "./UserName";
 
-export default function UserButton({ session }: { session: Session | null }) {
+export default function UserButton() {
   const { setMobileMenuIsOpen } = useMobileMenuContext();
   return (
     <button
@@ -13,7 +12,7 @@ export default function UserButton({ session }: { session: Session | null }) {
       className="flex flex-row-reverse items-center justify-center gap-3 hover:opacity-75 sm:flex-row"
     >
       <UserName />
-      <UserAvatar session={session} />
+      <UserAvatar />
     </button>
   );
 }

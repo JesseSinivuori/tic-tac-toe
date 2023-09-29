@@ -1,15 +1,12 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import NextAuthProvider from "./providers/NextAuthProvider";
 import { Session } from "next-auth";
 import Navbar from "./components/navbar/Navbar";
 import { Toaster } from "react-hot-toast";
 import { cookies } from "next/headers";
 import Footer from "./components/Footer";
 import ClientProviders from "./providers/ClientProviders";
-
-export const dynamic = "force-dynamic";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,23 +34,21 @@ export default function RootLayout({
       <body
         className={`${inter.className} relative flex h-full min-h-screen w-full flex-col items-center bg-zinc-50 pb-24 text-zinc-950/90 dark:bg-zinc-950 dark:text-zinc-50/90`}
       >
-        <NextAuthProvider session={session}>
-          <ClientProviders darkModeCookie={darkModeCookie}>
-            <Toaster
-              containerClassName="!z-[999999]"
-              toastOptions={{
-                className:
-                  "dark:!bg-zinc-950 !bg-zinc-50 dark:!text-white !text-black",
-                position: "bottom-center",
-              }}
-            />
-            <Navbar />
-            <main className="flex h-full w-full max-w-[1000px] flex-col items-center px-4">
-              {children}
-            </main>
-            <Footer />
-          </ClientProviders>
-        </NextAuthProvider>
+        <ClientProviders darkModeCookie={darkModeCookie} session={session}>
+          <Toaster
+            containerClassName="!z-[999999]"
+            toastOptions={{
+              className:
+                "dark:!bg-zinc-950 !bg-zinc-50 dark:!text-white !text-black",
+              position: "bottom-center",
+            }}
+          />
+          <Navbar />
+          <main className="flex h-full w-full max-w-[1000px] flex-col items-center px-4">
+            {children}
+          </main>
+          <Footer />
+        </ClientProviders>
       </body>
     </html>
   );

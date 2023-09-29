@@ -16,7 +16,7 @@ export default withAuth(
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-    worker-src blob:
+    worker-src 'self' blob:
 `;
 
     const requestHeaders = new Headers(req.headers);
