@@ -1,3 +1,4 @@
+"use client";
 import { LinkComponent } from "../ui/link";
 import { HistoryLink } from "./HistoryLink";
 

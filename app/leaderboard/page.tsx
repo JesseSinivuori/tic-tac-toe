@@ -3,6 +3,7 @@ import { getLeaderboard } from "../models/user/user.functions";
 import { SeparatorHorizontal } from "../components/ui/separator";
 import { Card } from "../components/ui/card";
 import { LinkComponentBlue } from "../components/ui/link";
+import Loading from "../loading";
 
 type User = {
   id: string;
@@ -22,7 +23,7 @@ export default async function Leaderboard() {
         The top 100 multiplayer players.
       </p>
       <SeparatorHorizontal className="py-6" />
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense fallback={<Loading />}>
         {users?.map((user, index) => (
           <UserBoard key={user.id} user={user} index={index} />
         ))}

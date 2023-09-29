@@ -13,6 +13,8 @@ const UserContext = createContext<UserContextProps>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserSchema | null>(null);
+  console.log("🚀 ~ file: UserProvider.tsx:16 ~ UserProvider ~ user:", user);
+
   const { data: session } = useSession();
 
   useEffect(() => {
