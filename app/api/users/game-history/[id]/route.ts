@@ -1,4 +1,3 @@
-import dbConnect from "@/app/lib/dbConnect";
 import { getUserWithGameHistory } from "@/app/models/user/user.functions";
 import { NextResponse } from "next/server";
 import { URL } from "url";
@@ -14,7 +13,6 @@ export async function GET(
     const limit = Number(searchParams.get("limit"));
     const limitWithMax = limit <= 10 ? limit : 10;
 
-    await dbConnect();
     const userWithPagination = await getUserWithGameHistory(
       id,
       page,

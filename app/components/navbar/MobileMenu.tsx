@@ -24,14 +24,14 @@ export default function MobileMenu({
   }, [mobileMenuIsOpen]);
 
   return (
-    <div className={`${mobileMenuIsOpen ? "flex" : "sm:hidden"}`}>
-      <MobileMenuButton onClick={handleToggleMobileMenu}>
-        <MobileMenuOpenIcon className="sm:hidden" />
+    <div className="flex">
+      <MobileMenuButton onClick={handleToggleMobileMenu} className="sm:hidden">
+        <MobileMenuOpenIcon />
       </MobileMenuButton>
       {mobileMenuIsOpen && (
         <div
           onClick={handleToggleMobileMenu}
-          className="fixed inset-0 z-[9997] h-full w-full "
+          className="fixed inset-0 z-[9997] h-full w-full"
         ></div>
       )}
       <div
@@ -39,7 +39,7 @@ export default function MobileMenu({
           mobileMenuIsOpen
             ? "absolute bottom-0 top-0 h-full min-h-screen w-full overflow-hidden"
             : "hidden"
-        }  bottom-0 right-0 top-0 z-[9999] h-full min-h-screen w-full max-w-[280px] flex-col border-l border-r border-black/10  bg-zinc-50 dark:border-white/10 dark:bg-zinc-950`}
+        }  bottom-0 right-0 top-0 z-[9999] h-full min-h-screen w-full max-w-[280px] flex-col border-l border-r border-black/10 bg-zinc-50 dark:border-white/10 dark:bg-zinc-950`}
       >
         <div className="absolute bottom-0 right-0 top-0 flex h-full min-h-screen w-full flex-col items-stretch justify-start gap-3 overflow-hidden px-2 py-3 ">
           <MobileMenuButton onClick={handleToggleMobileMenu}>
@@ -58,7 +58,7 @@ const MobileMenuOpenIcon = ({ className }: { className?: string }) => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="currentColor"
-    className={`h-6 w-6 ${className || ""}`}
+    className={`h-6 w-6 ${className || ""} hover:opacity-75`}
   >
     <path
       fillRule="evenodd"
@@ -85,15 +85,14 @@ const MobileMenuCloseIcon = () => (
 
 const MobileMenuButton = ({
   children,
-  onClick,
+  ...props
 }: {
   children: React.ReactNode;
-  onClick: () => void;
-}) => (
+} & React.ComponentProps<"button">) => (
   <button
     type="button"
-    onClick={onClick}
-    className="flex justify-start rounded-md border border-black/10 p-2 dark:border-white/10 "
+    className="flex justify-start rounded-md border border-black/10 p-2 hover:opacity-75 dark:border-white/10"
+    {...props}
   >
     {children}
   </button>

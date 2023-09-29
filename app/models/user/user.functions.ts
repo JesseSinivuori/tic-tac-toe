@@ -8,12 +8,14 @@ import {
   usernameSchema,
 } from "./user.schema.zod";
 import { Game, User } from "./user.schema";
+import dbConnect from "@/app/lib/dbConnect";
 
 /**mongoose functions */
 
 export const createAndSaveUser = async (newUserData: UserSchema) => {
   userSchema.parse(newUserData);
 
+  await dbConnect();
   const user = new User(newUserData);
   await user.save();
 
@@ -23,6 +25,7 @@ export const createAndSaveUser = async (newUserData: UserSchema) => {
 export const updateUser = async (newUserData: UserSchema) => {
   userSchema.parse(newUserData);
 
+  await dbConnect();
   const updatedUser = await User.findByIdAndUpdate(
     newUserData.id,
     newUserData,
@@ -38,6 +41,7 @@ export const updateUsername = async (
 ) => {
   usernameSchema.parse(newUsername);
 
+  await dbConnect();
   const existingUsername = await User.findOne({ username: newUsername });
   if (existingUsername) {
     throw new Error("Username is already taken.");
@@ -52,11 +56,13 @@ export const updateUsername = async (
 };
 
 export const getUserByEmail = async (email: string) => {
+  await dbConnect();
   const user = await User.findOne({ email });
   return user;
 };
 
 export const getUserById = async (id: string) => {
+  await dbConnect();
   const user = await User.findById(id);
 
   return user;
@@ -65,6 +71,7 @@ export const getUserById = async (id: string) => {
 export const addGameHistory = async (gameResult: GameSchema) => {
   gameSchema.parse(gameResult);
 
+  await dbConnect();
   const newGame = new Game(gameResult);
   await newGame.save();
 
@@ -114,6 +121,8 @@ export const getUserWithGameHistory = async (
 
   const skip = (page - 1) * limit;
 
+  await dbConnect();
+
   const user = await User.findById(userId)
     .select("username gameHistory")
     .populate({
@@ -140,4 +149,25 @@ export const getUserWithGameHistory = async (
     },
     user: user,
   };
+};
+
+export const getLeaderboard = async (limit: number = 100) => {
+  await dbConnect();
+
+  const leaderboardUsers = await User.find({})
+    .sort({ "gameHistory.wins": -1 })
+    .limit(limit)
+    .select(
+      "id username gameHistory.wins gameHistory.losses gameHistory.draws",
+    );
+
+  const leaderboardData = leaderboardUsers.map((user) => ({
+    id: user.id,
+    username: user.username,
+    wins: user.gameHistory?.wins || 0,
+    losses: user.gameHistory?.losses || 0,
+    draws: user.gameHistory?.draws || 0,
+  }));
+
+  return leaderboardData;
 };

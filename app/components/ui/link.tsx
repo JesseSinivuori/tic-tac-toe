@@ -11,7 +11,7 @@ export const LinkComponent = forwardRef<HTMLAnchorElement, LinkComponentProps>(
         ref={ref}
         className={` ${
           className || ""
-        } flex whitespace-nowrap rounded-md px-3 py-2 text-zinc-950/90 outline-none ring-zinc-950/90 ring-offset-2 ring-offset-zinc-50 focus-visible:bg-zinc-50 focus-visible:ring disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-50/90 dark:ring-zinc-50/90 dark:ring-offset-zinc-950 dark:focus-visible:bg-zinc-950`}
+        } flex whitespace-nowrap rounded-md px-2 py-1 text-zinc-950/90 outline-none ring-zinc-950/90 ring-offset-2 ring-offset-zinc-50 hover:opacity-75 focus-visible:bg-zinc-50 focus-visible:ring disabled:cursor-not-allowed disabled:opacity-50 dark:text-zinc-50/90 dark:ring-zinc-50/90 dark:ring-offset-zinc-950 dark:focus-visible:bg-zinc-950`}
         {...props}
       >
         {children}

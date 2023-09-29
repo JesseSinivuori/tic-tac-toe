@@ -45,7 +45,7 @@ export function ThemeButtonClient({
         darkMode ? "switch to light mode" : "switch to dark mode"
       }`}
       onClick={() => handleToggleDarkMode()}
-      className={`${className ?? ""} p-2`}
+      className={`${className ?? ""} p-2 hover:opacity-75`}
     >
       {darkMode ? LightModeIcon : DarkModeIcon}
     </button>
@@ -64,7 +64,7 @@ const setDarkModeCookie = (darkMode: boolean) => {
 
 const toggleDarkModeOnClient = (
   darkMode: boolean,
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   const html = document.querySelector("html")!;
 

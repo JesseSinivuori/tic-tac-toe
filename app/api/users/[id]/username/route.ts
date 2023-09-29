@@ -1,5 +1,4 @@
 import { isAuthorized } from "@/app/lib/authorize";
-import dbConnect from "@/app/lib/dbConnect";
 import { updateUsername } from "@/app/models/user/user.functions";
 import { NextResponse } from "next/server";
 
@@ -14,7 +13,6 @@ export async function PATCH(
 
     await isAuthorized(email);
 
-    await dbConnect();
     const user = await updateUsername(id, newUsername);
 
     return NextResponse.json(user, { status: 200 });

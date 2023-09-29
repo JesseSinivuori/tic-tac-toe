@@ -33,7 +33,7 @@ export default function RootLayout({
       style={{ colorScheme: "dark" }}
     >
       <body
-        className={`${inter.className} relative flex h-full min-h-screen w-full flex-col items-center bg-zinc-50 pb-24 text-black dark:bg-zinc-950 dark:text-white`}
+        className={`${inter.className} relative flex h-full min-h-screen w-full flex-col items-center bg-zinc-50 pb-24 text-zinc-950/90 dark:bg-zinc-950 dark:text-zinc-50/90`}
       >
         <NextAuthProvider session={session}>
           <ClientProviders darkModeCookie={darkModeCookie}>

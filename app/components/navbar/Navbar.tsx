@@ -15,8 +15,8 @@ export default async function Navbar() {
   const session = await getServerSession();
 
   return (
-    <div className="relative flex h-full w-full max-w-[1000px] flex-col items-center justify-center px-3">
-      <div className="flex w-full items-center justify-center gap-3 border-b border-zinc-950/10 p-3 dark:border-zinc-50/10">
+    <nav className="relative flex h-full w-full max-w-[1000px] flex-col items-center justify-center px-3">
+      <div className="flex w-full items-center justify-center gap-3 border-b border-zinc-950/10 px-3 py-2 dark:border-zinc-50/10">
         <MobileMenuProvider>
           <div className="flex w-full items-center justify-start">
             <LinkComponent href="/" className="font-medium">
@@ -37,7 +37,7 @@ export default async function Navbar() {
           </MobileMenu>
         </MobileMenuProvider>
       </div>
-    </div>
+    </nav>
   );
 }
 
@@ -50,19 +50,20 @@ const NavLinksMobile = ({
 }) => (
   <>
     {children}
-    <ThemeButton className="rounded-md border border-zinc-950/10 dark:border-zinc-50/10" />
     <SeparatorHorizontal />
-
     {!session ? (
       <SignInButton />
     ) : (
       <>
+        <ThemeButton className="rounded-md border border-zinc-950/10 dark:border-zinc-50/10" />
+        {/* <UserSettingsButton /> */}
         <div className="flex w-full items-center justify-start py-2">
           <UserAvatar session={session} />
           <div className=" flex items-center justify-start pl-2">
             <UserName />
           </div>
         </div>
+
         <SignOutButton />
       </>
     )}

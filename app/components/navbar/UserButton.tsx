@@ -10,7 +10,7 @@ export default function UserButton({ session }: { session: Session | null }) {
     <button
       type="button"
       onClick={() => setMobileMenuIsOpen((prev) => !prev)}
-      className="flex flex-row-reverse items-center justify-center gap-3 sm:flex-row"
+      className="flex flex-row-reverse items-center justify-center gap-3 hover:opacity-75 sm:flex-row"
     >
       <UserName />
       <UserAvatar session={session} />

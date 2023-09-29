@@ -5,7 +5,7 @@ export default function SignOutButton() {
   return (
     <button
       type="button"
-      className="flex whitespace-nowrap py-2 px-4 rounded-md border dark:border-white/10 border-black/10"
+      className="flex whitespace-nowrap rounded-md border border-black/10 px-4 py-2 hover:opacity-75 dark:border-white/10"
       onClick={() => signOut()}
     >
       Sign out

@@ -1,5 +1,4 @@
 import { isAuthorized } from "@/app/lib/authorize";
-import dbConnect from "@/app/lib/dbConnect";
 import { addGameHistory } from "@/app/models/user/user.functions";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
@@ -17,7 +16,6 @@ export async function POST(req: Request, _res: Response) {
     }
     await isAuthorized(userEmail);
 
-    await dbConnect();
     await addGameHistory(gameResult);
 
     return NextResponse.json({ status: 200 });

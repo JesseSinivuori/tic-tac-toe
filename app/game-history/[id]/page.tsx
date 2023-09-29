@@ -45,11 +45,11 @@ export default async function History({
   }
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center pt-8">
+    <div className="flex h-full w-full flex-col items-center justify-center">
       <div className="flex flex-col">
         <Title username={username} />
         <p className="flex items-center justify-center hyphens-auto text-zinc-950/75 dark:text-zinc-50/75">
-          Match history currently only supports multiplayer games.
+          Match history currently only supports multiplayer.
         </p>
       </div>
       <Stats
