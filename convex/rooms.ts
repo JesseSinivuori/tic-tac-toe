@@ -1,6 +1,5 @@
-import { mutation } from "./_generated/server";
+import { mutation, internalMutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { query } from "./_generated/server";
 
 export const createRoom = mutation({
   args: {
@@ -173,6 +172,31 @@ export const changeBoardSize = mutation({
       await ctx.db.patch(room._id, newRoom);
     } else {
       throw new Error("Failed to change room size.");
+    }
+  },
+});
+
+export const delete24HoursOldRooms = internalMutation({
+  handler: async (ctx) => {
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+    const currentDateInMilliseconds = Date.now();
+    const dateMinus24Hours = currentDateInMilliseconds - oneDayInMilliseconds;
+    try {
+      const roomsToDelete = await ctx.db
+        .query("rooms")
+        .filter((q) => q.lte(q.field("_creationTime"), dateMinus24Hours))
+        .collect();
+
+      for (let room of roomsToDelete) {
+        await ctx.db.delete(room._id);
+      }
+    } catch (error) {
+      console.error({
+        error: {
+          error: error,
+          message: "Failed to delete rooms.",
+        },
+      });
     }
   },
 });
