@@ -1,6 +1,6 @@
 "use client";
 import SignInButton from "../SignInButton";
-import { ThemeButton } from "../ThemeButton";
+import { ThemeButton } from "./ThemeButton";
 import MobileMenu from "./MobileMenu";
 import UserButton from "./UserButton";
 import MobileMenuProvider from "@/app/providers/MobileMenuProvider";

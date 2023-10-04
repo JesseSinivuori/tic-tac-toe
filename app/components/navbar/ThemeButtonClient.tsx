@@ -1,6 +1,8 @@
 "use client";
 import { useEffect } from "react";
-import { useThemeContext } from "../providers/ThemeProvider";
+import { useThemeContext } from "../../providers/ThemeProvider";
+import { Button } from "../ui/button";
+import { useMobileMenuContext } from "@/app/providers/MobileMenuProvider";
 
 export function ThemeButtonClient({
   className,
@@ -12,6 +14,7 @@ export function ThemeButtonClient({
   DarkModeIcon: JSX.Element;
 }) {
   const { darkMode, setDarkMode } = useThemeContext();
+  const { mobileMenuIsOpen } = useMobileMenuContext();
 
   const handleToggleDarkMode = () => {
     setDarkModeCookie(!darkMode);
@@ -39,16 +42,19 @@ export function ThemeButtonClient({
   }, [setDarkMode]);
 
   return (
-    <button
+    <Button
       type="button"
       aria-label={`${
         darkMode ? "switch to light mode" : "switch to dark mode"
       }`}
       onClick={() => handleToggleDarkMode()}
-      className={`${className ?? ""} p-2 hover:opacity-75`}
+      className={`${className ?? ""} !justify-start ${
+        !mobileMenuIsOpen &&
+        "!border-transparent hover:!bg-transparent hover:!opacity-75"
+      }`}
     >
       {darkMode ? LightModeIcon : DarkModeIcon}
-    </button>
+    </Button>
   );
 }
 

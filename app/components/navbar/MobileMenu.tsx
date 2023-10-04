@@ -2,6 +2,7 @@
 import { useMobileMenuContext } from "@/app/providers/MobileMenuProvider";
 import { SeparatorHorizontal } from "../ui/separator";
 import { useEffect } from "react";
+import { Button } from "../ui/button";
 
 export default function MobileMenu({
   children,
@@ -25,9 +26,9 @@ export default function MobileMenu({
 
   return (
     <div className="flex">
-      <MobileMenuButton onClick={handleToggleMobileMenu} className="sm:hidden">
+      <Button onClick={handleToggleMobileMenu} className="!p-2 sm:hidden">
         <MobileMenuOpenIcon />
-      </MobileMenuButton>
+      </Button>
       {mobileMenuIsOpen && (
         <div
           onClick={handleToggleMobileMenu}
@@ -42,9 +43,9 @@ export default function MobileMenu({
         }  bottom-0 right-0 top-0 z-[9999] h-full min-h-screen w-full max-w-[280px] flex-col border-l border-r border-black/10 bg-zinc-50 dark:border-white/10 dark:bg-zinc-950`}
       >
         <aside className="absolute bottom-0 right-0 top-0 flex h-full min-h-screen w-full flex-col items-stretch justify-start gap-3 overflow-hidden overflow-y-auto px-2 py-3 ">
-          <MobileMenuButton onClick={handleToggleMobileMenu}>
+          <Button onClick={handleToggleMobileMenu} className="!justify-start">
             <MobileMenuCloseIcon />
-          </MobileMenuButton>
+          </Button>
           <SeparatorHorizontal />
           {children}
         </aside>
@@ -81,19 +82,4 @@ const MobileMenuCloseIcon = () => (
       clipRule="evenodd"
     />
   </svg>
-);
-
-const MobileMenuButton = ({
-  children,
-  ...props
-}: {
-  children: React.ReactNode;
-} & React.ComponentProps<"button">) => (
-  <button
-    type="button"
-    className="flex justify-start rounded-md border border-black/10 p-2 hover:opacity-75 dark:border-white/10"
-    {...props}
-  >
-    {children}
-  </button>
 );
