@@ -11,6 +11,7 @@ import { UserAvatar } from "../UserAvatar";
 import { UserName } from "./UserName";
 import SignOutButton from "../SignOutButton";
 import { UserSchema } from "@/app/models/user/user.schema.zod";
+import { UpdateUsernameButton } from "./UpdateUsernameButton";
 
 export default function NavbarClient() {
   const { user } = useUser();
@@ -47,7 +48,7 @@ const NavLinksMobile = ({
     ) : (
       <>
         <ThemeButton className="rounded-md border border-zinc-950/10 dark:border-zinc-50/10" />
-        {/* <UserSettingsButton /> */}
+        <UpdateUsernameButton />
         <div className="flex w-full items-center justify-start py-2">
           <UserAvatar />
           <div className=" flex items-center justify-start pl-2">

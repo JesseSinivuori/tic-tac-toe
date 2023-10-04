@@ -377,7 +377,16 @@ export default function HomeClient({
   };
 
   if (user && !user.username) {
-    return <ChooseUserName />;
+    return (
+      <ChooseUserName
+        className="pt-8"
+        closeButtonProps={{
+          disabled: true,
+          title: "This feature is not implemented yet.",
+          children: "Skip",
+        }}
+      />
+    );
   }
 
   return (

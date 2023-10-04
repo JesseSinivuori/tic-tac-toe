@@ -1,4 +1,5 @@
 import {
+  GameHistorySchema,
   GameSchema,
   PlayerSchema,
   PopulatedPlayerSchema,
@@ -19,11 +20,21 @@ import Loading from "@/app/loading";
 
 export const dynamic = "force-dynamic";
 
+//assert types for typescript
 const getPopulatedPlayer = (player: PlayerSchema): PopulatedPlayerSchema => {
   return {
     id: typeof player.userId !== "string" && player.userId.id,
     username: typeof player.userId !== "string" && player.userId.username,
-  } as unknown as PopulatedPlayerSchema;
+  } as PopulatedPlayerSchema;
+};
+
+//assert types for typescript
+const getGames = (gameHistory: GameHistorySchema) => {
+  if (typeof gameHistory?.games[0] === "object") {
+    return gameHistory?.games as GameProps[];
+  } else {
+    return [];
+  }
 };
 
 export default async function History({
@@ -45,6 +56,8 @@ export default async function History({
     return <ChooseUserName />;
   }
 
+  const games = getGames(gameHistory);
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       <div className="flex flex-col">
@@ -62,7 +75,7 @@ export default async function History({
 
       <div className="flex w-full flex-col pt-6">
         <SeparatorHorizontal className="py-6" />
-        {gameHistory?.games.map((game) => (
+        {games.map((game) => (
           <Game
             {...game}
             winnerId={game.winnerId?.toString()}
@@ -177,7 +190,7 @@ const Game = ({
 
   return (
     <div className="flex w-full flex-col items-center justify-center py-1">
-      <Card className="max-w-[800px] ">
+      <Card className="w-full max-w-[800px]">
         <div
           className={`flex w-full flex-col items-center justify-center gap-6 whitespace-nowrap  rounded-md font-semibold xss:flex-row xss:flex-wrap `}
         >

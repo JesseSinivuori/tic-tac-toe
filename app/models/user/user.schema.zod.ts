@@ -40,7 +40,7 @@ export const gameHistorySchema = z
     wins: z.number(),
     losses: z.number(),
     draws: z.number(),
-    games: z.array(gameSchema),
+    games: z.array(gameSchema).or(z.array(idSchema)),
   })
   .optional();
 

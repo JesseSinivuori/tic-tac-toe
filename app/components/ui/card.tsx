@@ -12,7 +12,7 @@ export const Card = forwardRef<
       ref={ref}
       className={`${
         className || ""
-      } flex w-full flex-col rounded-md border border-zinc-950/10 p-3 dark:border-zinc-50/10`}
+      } flex flex-col rounded-md border border-zinc-950/10 bg-zinc-50 p-3 dark:border-zinc-50/10 dark:bg-zinc-950`}
       {...props}
     >
       {children}
