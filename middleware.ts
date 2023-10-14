@@ -17,7 +17,11 @@ export default withAuth(
     frame-ancestors 'none';
     upgrade-insecure-requests;
     worker-src 'self' blob:;
-    connect-src 'self' wss://sensible-guineapig-904.convex.cloud/;
+    connect-src 'self' ${
+      process.env.NODE_ENV === "development"
+        ? "wss://sensible-guineapig-904.convex.cloud/"
+        : "wss://rapid-mule-590.convex.cloud/"
+    };;
 `;
 
     const requestHeaders = new Headers(req.headers);
