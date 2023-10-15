@@ -8,7 +8,7 @@ https://tic-tac-toe-x.vercel.app/
 - [shadcn/ui](https://ui.shadcn.com/) - UI Components
 - [Convex](https://www.convex.dev/) - Real time database(for multiplayer rooms)
 - [OpenAI](https://platform.openai.com/docs/introduction) - OpenAI API(ChatGPT)
-- [Redis](https://redis.io/) - Rate limiting(limiting ChatGPT API)
+- [Redis](https://redis.io/) - Fast, in memory database(rate limiting ChatGPT API)
 - [MongoDB](https://www.mongodb.com/) - NoSQL document-oriented database(for storing leaderboard, match history, user data)
 - [NextAuth.js](https://next-auth.js.org/) - Authentication(github login)
 - [GitHub Actions](https://github.com/features/actions) - CI/CD
