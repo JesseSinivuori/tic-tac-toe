@@ -9,7 +9,7 @@ https://tic-tac-toe-x.vercel.app/
 - [Convex](https://www.convex.dev/) - Real time database(for multiplayer rooms)
 - [OpenAI](https://platform.openai.com/docs/introduction) - OpenAI API(ChatGPT)
 - [Redis](https://redis.io/) - Rate limiting(limiting ChatGPT API)
-- [MongoDB](https://www.mongodb.com/) - NoSQL document-oriented database(for storing leaderboard, match history, user data))
+- [MongoDB](https://www.mongodb.com/) - NoSQL document-oriented database(for storing leaderboard, match history, user data)
 - [NextAuth.js](https://next-auth.js.org/) - Authentication(github login)
 - [GitHub Actions](https://github.com/features/actions) - CI/CD
 - [Vercel](https://vercel.com/) - The Host
