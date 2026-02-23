@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: "Play tic-tac-toe.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   session,
 }: {
@@ -23,7 +23,7 @@ export default function RootLayout({
   session: Session;
 }) {
   const darkModeCookie: boolean = JSON.parse(
-    cookies().get("darkMode")?.value ?? "true",
+    (await cookies()).get("darkMode")?.value ?? "true",
   );
   return (
     <html

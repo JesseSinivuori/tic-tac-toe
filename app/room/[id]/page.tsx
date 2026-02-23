@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import HomeClient, { Board } from "@/app/components/HomeClient";
 import { api } from "@/convex/_generated/api";
@@ -35,9 +35,9 @@ export type RoomData =
   | undefined;
 
 type RoomProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export type PlayerProps =
@@ -48,11 +48,11 @@ export type PlayerProps =
   | null
   | undefined;
 
-export default function Room({ params: { id } }: RoomProps) {
+export default function Room({ params }: RoomProps) {
+  const { id } = use(params);
   const { user } = useUser();
 
   const [player, setPlayer] = useState<PlayerProps>(null);
-  console.log("🚀 ~ file: page.tsx:55 ~ Room ~ player:", player);
 
   const playerNameRef = useRef<HTMLInputElement>(null);
 

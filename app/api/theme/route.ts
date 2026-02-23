@@ -3,11 +3,12 @@ import { cookies } from "next/headers";
 
 export async function PATCH(req: NextRequest, _res: NextResponse) {
   const darkMode = await req.json();
+  const cookieStore = await cookies();
 
   if (darkMode) {
-    cookies().delete("darkMode");
+    cookieStore.delete("darkMode");
   } else {
-    cookies().set("darkMode", "false");
+    cookieStore.set("darkMode", "false");
   }
 
   return new NextResponse();
