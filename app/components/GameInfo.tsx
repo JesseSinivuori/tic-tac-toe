@@ -1,9 +1,7 @@
-import { Session } from "next-auth";
 import { MarksToWin } from "../lib/gameLogic/winConditions";
 import { GameMode } from "../providers/GameLogicProvider";
-import { Player, usePlayer } from "../lib/gameLogic/usePlayer";
+import { Player } from "../lib/gameLogic/usePlayer";
 import { RoomData } from "../room/[id]/page";
-import { useUser } from "../providers/UserProvider";
 
 export const GameInfo = ({
   gameMode,
@@ -18,19 +16,8 @@ export const GameInfo = ({
   playerId: string | null | undefined;
   roomData: RoomData;
 }) => {
-  const { user } = useUser();
   if (gameMode === "AI") {
-    if (!user)
-      return (
-        <>
-          <p className="p-2">Please sign in to play against ChatGPT.</p>
-        </>
-      );
-    return (
-      <p className="p-2">
-        Playing against ChatGPT. Place {marksToWin} in a row to win.
-      </p>
-    );
+    return <p className="p-2">Play against ChatGPT is currently disabled.</p>;
   }
   if (gameMode === "BOT") {
     return (

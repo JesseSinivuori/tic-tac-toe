@@ -1,12 +1,10 @@
 "use client";
-import SignInButton from "./SignInButton";
 import { Square } from "./Square";
 import type { Board as TBoard } from "./HomeClient";
 import { MarksToWin, WinConditions } from "../lib/gameLogic/winConditions";
 import { Mark, Player } from "../lib/gameLogic/usePlayer";
 import { RoomData } from "../room/[id]/page";
 import { GameMode } from "../providers/GameLogicProvider";
-import { useUser } from "../providers/UserProvider";
 
 export const Board = ({
   board,
@@ -38,9 +36,8 @@ export const Board = ({
   roomData: RoomData;
   playerId?: string | null;
 }) => {
-  const { user } = useUser();
-  if (!user && gameMode === "AI") {
-    return <SignInButton />;
+  if (gameMode === "AI") {
+    return null;
   }
 
   const getBoard = () => {

@@ -4,10 +4,11 @@ import { URL } from "url";
 
 export async function GET(
   req: Request,
-  { params: { id } }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
   _res: Response,
 ) {
   try {
+    const { id } = await params;
     const searchParams = new URL(req.url).searchParams;
     const page = Number(searchParams.get("page"));
     const limit = Number(searchParams.get("limit"));

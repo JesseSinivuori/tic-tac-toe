@@ -4,10 +4,11 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params: { email } }: { params: { email: string } },
+  { params }: { params: Promise<{ email: string }> },
   res: Response,
 ) {
   try {
+    const { email } = await params;
     const decodedEmail = decodeURIComponent(email);
 
     await isAuthorized(decodedEmail);

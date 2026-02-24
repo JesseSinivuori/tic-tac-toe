@@ -38,13 +38,14 @@ const getGames = (gameHistory: GameHistorySchema) => {
 };
 
 export default async function History({
-  params: { id },
+  params,
   searchParams,
 }: {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { page, limit } = searchParams;
+  const { id } = await params;
+  const { page, limit } = await searchParams;
   const pageAsNumber = Number(page) || 1;
   const limitAsNumber = Number(limit) || 10;
   const data = await fetchUserWithGameHistory(id, pageAsNumber, limitAsNumber);

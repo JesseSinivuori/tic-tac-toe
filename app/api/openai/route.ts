@@ -13,9 +13,11 @@ const ratelimit =
       })
     : null;
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   // You could alternatively limit based on user ID or similar
-  const ip = req.ip ?? "127.0.0.1";
+  // Use x-forwarded-for for IP address since req.ip does not exist
+ /*  const forwardedFor = req.headers.get("x-forwarded-for");
+  const ip = forwardedFor?.split(",")[0]?.trim() || "127.0.0.1";
   let headers = new Headers();
 
   if (process.env.NODE_ENV === "production") {
@@ -33,5 +35,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const { player, board } = await req.json();
 
   const response = await chatCompletion(player, board);
-  return NextResponse.json(response, { status: 200, headers: headers });
+  return NextResponse.json(response, { status: 200, headers: headers }); */
+  return NextResponse.json({ message: "Disabled" }, { status: 200 });
 }
