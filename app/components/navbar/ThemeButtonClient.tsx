@@ -10,8 +10,8 @@ export function ThemeButtonClient({
 	DarkModeIcon,
 }: {
 	className?: string;
-	LightModeIcon: JSX.Element;
-	DarkModeIcon: JSX.Element;
+	LightModeIcon: React.JSX.Element;
+	DarkModeIcon: React.JSX.Element;
 }) {
 	const { darkMode, setDarkMode } = useThemeContext();
 	const { mobileMenuIsOpen } = useMobileMenuContext();

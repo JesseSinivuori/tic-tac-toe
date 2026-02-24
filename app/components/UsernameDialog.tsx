@@ -10,7 +10,7 @@ type UsernameDialog = {
 };
 
 export function UsernameDialog({ open, close, onClose }: UsernameDialog) {
-	const dialogRef = useRef<HTMLDialogElement>();
+	const dialogRef = useRef<HTMLDialogElement | null>(null);
 
 	useEffect(() => {
 		dialogRef.current = document.getElementById(
