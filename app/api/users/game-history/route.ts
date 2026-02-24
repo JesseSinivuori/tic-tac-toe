@@ -3,7 +3,7 @@ import { addGameHistory } from "@/app/models/user/user.functions";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-export async function POST(req: Request, _res: Response) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { gameResult, userEmail } = body;

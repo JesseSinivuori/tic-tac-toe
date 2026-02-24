@@ -6,10 +6,10 @@ import { NextResponse } from "next/server";
 //get user by id
 export async function GET(
   req: Request,
-  { params: { id } }: { params: { id: string } },
-  _res: Response,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const body = await req.json();
     const userEmail = body.userEmail;
 

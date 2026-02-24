@@ -4,8 +4,7 @@ import { URL } from "url";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> },
-  _res: Response,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;

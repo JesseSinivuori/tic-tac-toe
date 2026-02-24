@@ -5,10 +5,10 @@ import { NextResponse } from "next/server";
 //update username
 export async function PATCH(
   req: Request,
-  { params: { id } }: { params: { id: string } },
-  _res: Response,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { newUsername, email } = await req.json();
 
     await isAuthorized(email);

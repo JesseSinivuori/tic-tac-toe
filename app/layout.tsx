@@ -1,12 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Session } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import Navbar from "./components/navbar/Navbar";
 import { Toaster } from "react-hot-toast";
 import { cookies } from "next/headers";
 import Footer from "./components/Footer";
 import ClientProviders from "./providers/ClientProviders";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,11 +18,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  session,
 }: {
   children: React.ReactNode;
-  session: Session;
 }) {
+  const session = await getServerSession(authOptions);
   const darkModeCookie: boolean = JSON.parse(
     (await cookies()).get("darkMode")?.value ?? "true",
   );

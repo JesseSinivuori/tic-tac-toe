@@ -13,7 +13,7 @@ export default function ClientProviders({
 }: {
   children: React.ReactNode;
   darkModeCookie: boolean;
-  session: Session;
+  session: Session | null;
 }) {
   return (
     <NextAuthProvider session={session}>
