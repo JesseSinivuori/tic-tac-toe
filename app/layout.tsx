@@ -1,55 +1,55 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { getServerSession } from "next-auth/next";
-import Navbar from "./components/navbar/Navbar";
-import { Toaster } from "react-hot-toast";
 import { cookies } from "next/headers";
-import Footer from "./components/Footer";
-import ClientProviders from "./providers/ClientProviders";
+import { getServerSession } from "next-auth/next";
+import { Toaster } from "react-hot-toast";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import Footer from "./components/Footer";
+import Navbar from "./components/navbar/Navbar";
+import ClientProviders from "./providers/ClientProviders";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Tic-Tac-Toe",
-  description: "Play tic-tac-toe.",
+	title: "Tic-Tac-Toe",
+	description: "Play tic-tac-toe.",
 };
 
 export default async function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-  const darkModeCookie: boolean = JSON.parse(
-    (await cookies()).get("darkMode")?.value ?? "true",
-  );
-  return (
-    <html
-      lang="en"
-      className={`${darkModeCookie ? "dark" : ""}  `}
-      style={{ colorScheme: "dark" }}
-    >
-      <body
-        className={`${inter.className} relative flex h-full min-h-screen w-full flex-col items-center bg-zinc-50 pb-24 text-zinc-950/90 dark:bg-zinc-950 dark:text-zinc-50/90`}
-      >
-        <ClientProviders darkModeCookie={darkModeCookie} session={session}>
-          <Toaster
-            containerClassName="!z-[999999]"
-            toastOptions={{
-              className:
-                "dark:!bg-zinc-950 !bg-zinc-50 dark:!text-white !text-black",
-              position: "bottom-center",
-            }}
-          />
-          <Navbar />
-          <main className="flex h-full w-full max-w-[1000px] flex-col items-center px-4">
-            {children}
-          </main>
-          <Footer />
-        </ClientProviders>
-      </body>
-    </html>
-  );
+	const session = await getServerSession(authOptions);
+	const darkModeCookie: boolean = JSON.parse(
+		(await cookies()).get("darkMode")?.value ?? "true",
+	);
+	return (
+		<html
+			lang="en"
+			className={`${darkModeCookie ? "dark" : ""}  `}
+			style={{ colorScheme: "dark" }}
+		>
+			<body
+				className={`${inter.className} relative flex h-full min-h-screen w-full flex-col items-center bg-zinc-50 pb-24 text-zinc-950/90 dark:bg-zinc-950 dark:text-zinc-50/90`}
+			>
+				<ClientProviders darkModeCookie={darkModeCookie} session={session}>
+					<Toaster
+						containerClassName="!z-[999999]"
+						toastOptions={{
+							className:
+								"dark:!bg-zinc-950 !bg-zinc-50 dark:!text-white !text-black",
+							position: "bottom-center",
+						}}
+					/>
+					<Navbar />
+					<main className="flex h-full w-full max-w-[1000px] flex-col items-center px-4">
+						{children}
+					</main>
+					<Footer />
+				</ClientProviders>
+			</body>
+		</html>
+	);
 }

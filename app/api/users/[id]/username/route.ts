@@ -1,27 +1,27 @@
+import { NextResponse } from "next/server";
 import { isAuthorized } from "@/app/lib/authorize";
 import { updateUsername } from "@/app/models/user/user.functions";
-import { NextResponse } from "next/server";
 
 //update username
 export async function PATCH(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
+	req: Request,
+	{ params }: { params: Promise<{ id: string }> },
 ) {
-  try {
-    const { id } = await params;
-    const { newUsername, email } = await req.json();
+	try {
+		const { id } = await params;
+		const { newUsername, email } = await req.json();
 
-    await isAuthorized(email);
+		await isAuthorized(email);
 
-    const user = await updateUsername(id, newUsername);
+		const user = await updateUsername(id, newUsername);
 
-    return NextResponse.json(user, { status: 200 });
-  } catch (error: any) {
-    console.error(error.message);
-    if (error.message === "Username is already taken.") {
-      return NextResponse.json({ error: error.message }, { status: 409 });
-    }
+		return NextResponse.json(user, { status: 200 });
+	} catch (error: any) {
+		console.error(error.message);
+		if (error.message === "Username is already taken.") {
+			return NextResponse.json({ error: error.message }, { status: 409 });
+		}
 
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+		return NextResponse.json({ error: error.message }, { status: 500 });
+	}
 }

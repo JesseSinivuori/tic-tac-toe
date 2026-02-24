@@ -1,21 +1,21 @@
+import { NextResponse } from "next/server";
 import { isAuthorized } from "@/app/lib/authorize";
 import { getUserByEmail } from "@/app/models/user/user.functions";
-import { NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: Promise<{ email: string }> }
+	req: Request,
+	{ params }: { params: Promise<{ email: string }> },
 ) {
-  try {
-    const { email } = await params;
-    const decodedEmail = decodeURIComponent(email);
+	try {
+		const { email } = await params;
+		const decodedEmail = decodeURIComponent(email);
 
-    await isAuthorized(decodedEmail);
+		await isAuthorized(decodedEmail);
 
-    const user = await getUserByEmail(decodedEmail);
+		const user = await getUserByEmail(decodedEmail);
 
-    return NextResponse.json(user, { status: 200 });
-  } catch (error) {
-    return NextResponse.json("Internal server error.", { status: 500 });
-  }
+		return NextResponse.json(user, { status: 200 });
+	} catch (error) {
+		return NextResponse.json("Internal server error.", { status: 500 });
+	}
 }
